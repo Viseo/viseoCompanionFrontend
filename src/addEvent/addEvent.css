@@ -33,7 +33,7 @@ h2 small {
 }
 
 .error {
-    margin-top: 30px;
+    /*margin-top: 30px;*/
     margin-bottom: 8px;
     background: rgba(255, 24, 24, 0.11);
     color: red;
@@ -42,9 +42,7 @@ h2 small {
 }
 
 .datepicker {
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: rgba(0, 0, 0, 0.258824);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.258824);
 }
 
     /* form starting stylings ------------------------------- */
@@ -66,7 +64,7 @@ input:focus 		{ outline:none; }
 
 .mui-textfield {
     display: block;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 20px;
     position: relative;
 }
@@ -94,6 +92,9 @@ input:focus 		{ outline:none; }
     padding-left: 0px;
 }
 
+.mui-col-md-10 {
+    padding-left: 0px;
+}
 /* LABEL ======================================= */
 label 				 {
     color:#999;

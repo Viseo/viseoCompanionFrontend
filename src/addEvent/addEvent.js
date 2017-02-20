@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 import {Input, Textarea, Button, Select, Option, Container, Row, Col} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
 import DatePicker from 'react-datepicker';
+import localisationLogo from '../images/localisation.png';
 import './addEvent.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import settings from '../config/settings'
@@ -15,6 +16,7 @@ export default class AddEvent extends Component {
         this.state = {
             name: '',
             place: '',
+            errorPlace:'',
             hours:[],
             time: '',
             isTimeSet: false,
@@ -27,6 +29,8 @@ export default class AddEvent extends Component {
             errorType:''
         };
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleTitleChange = this.handleTitleChange.bind(this);
+        this.handlePlaceChange = this.handlePlaceChange.bind(this);
         this.onPressSendNewEvent = this.onPressSendNewEvent.bind(this);
         this.isFormCorrect = this.isFormCorrect.bind(this);
         this.addEvent = this.addEvent.bind(this);
@@ -34,16 +38,54 @@ export default class AddEvent extends Component {
         this.handleTimeChange = this.handleTimeChange.bind(this);
 
         this.generateHours();
+
     }
 
-    handleTitleChange(event) {
-        let title = event.target.value;
-        if(title.length <= 2 ) {
-            this.setState({
-                errorTitle:'Le titre doit contenir au moins deux caractères.'
-            })
-        }
 
+    handleTitleChange(event) {
+        let value = event.target.value;
+        const regexTitle =/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ.\s\-,'?!"/+*#]*$/;
+
+        this.setState({
+            name:value
+        });
+
+        if(value.length <= 2 ) {
+            this.setState({
+                errorTitle:'Le nom doit contenir au moins deux caractères.'
+            });
+        }else if(!regexTitle.test(value)){
+            this.setState({
+            errorTitle:'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !'
+            });
+        }else {
+            this.setState({
+                errorTitle:''
+            });
+        }
+    }
+
+    handlePlaceChange(event) {
+        let value = event.target.value;
+        const regexPlace =/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\s\-']*$/;
+
+        this.setState({
+            place:value
+        });
+
+        if(value.length <= 2 ) {
+            this.setState({
+                errorPlace:'Le lieu doit contenir au moins deux caractères.'
+            });
+        }else if(!regexPlace.test(value)){
+            this.setState({
+                errorPlace:'Le lieu doit seulement contenir des caractères alphanumériques, tiret ou apostrophe.'
+            });
+        }else {
+            this.setState({
+                errorPlace:''
+            });
+        }
     }
 
     handleInputChange(event) {
@@ -51,7 +93,7 @@ export default class AddEvent extends Component {
         const name = target.name;
 
         this.setState({
-            [name]: target.value
+            [name]: target.value,
         });
     }
 
@@ -77,13 +119,27 @@ export default class AddEvent extends Component {
             })
         }
         if(this.isFormCorrect()){
-            await this.addEvent(
+            if(await this.addEvent(
                 this.state.name,
                 this.state.datetime,
                 this.state.keyWords,
                 this.state.place,
                 this.state.description
-            );
+            )) {
+                window.location.reload();
+                alert("Evènement ajouté.");
+            } else {
+                alert("Erreur.");
+            }
+        }
+    }
+
+    formatMessage(string1, string2) {
+        if(string1.length !== 0){
+            string1 += " et" + string2;
+            return string1
+        } else {
+            return string2;
         }
     }
 
@@ -93,13 +149,13 @@ export default class AddEvent extends Component {
             hasError = " une date";
         }
         if (!this.state.isTimeSet) {
-            hasError = hasError + " une horaire"
+            hasError = this.formatMessage(hasError, " une horaire");
         }
-        if (this.state.name === '') {
-            hasError = hasError + " un nom"
+        if (this.state.name === '' && this.state.errorTitle === '') {
+            hasError = this.formatMessage(hasError, " un nom correct");
         }
-        if (this.state.place === '') {
-            hasError = hasError + " un lieu"
+        if (this.state.place === '' && this.state.errorPlace === '') {
+            hasError = this.formatMessage(hasError, " un lieu correct");
         }
 
         if (hasError !== '') {
@@ -131,10 +187,9 @@ export default class AddEvent extends Component {
                     "place": place,
                 })
             })
-            console.warn(response.status);
-            let responseJson = await response.json();
+            response = await response.status;
 
-            if(responseJson)
+            if(response === 200)
                 return true;
         } catch (error){
             console.warn(error);
@@ -165,13 +220,13 @@ export default class AddEvent extends Component {
                                 label="Nom de l'évènement"
                                 value={this.state.name}
                                 floatingLabel={true}
-                                onChange={this.handleInputChange}
+                                onChange={this.handleTitleChange}
                                 required={true}
                             />
                         </Row>
-                        <Row>
+                        {/*<Row>*/}
                             <div className="error">{this.state.errorTitle}</div>
-                        </Row>
+                        {/*</Row>*/}
                         <Row>
                             <Col md="8">
                                 <DatePicker
@@ -189,15 +244,23 @@ export default class AddEvent extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Input
-                                name="place"
-                                label="Lieu"
-                                value={this.state.place}
-                                floatingLabel={true}
-                                onChange={this.handleInputChange}
-                                required={true}
-                            />
+                            <Col md="10">
+                                <Input
+                                    name="place"
+                                    label="Lieu"
+                                    value={this.state.place}
+                                    floatingLabel={true}
+                                    onChange={this.handlePlaceChange}
+                                    required={true}
+                                />
+                            </Col>
+                            <Col md="2">
+                                <div className="localisationLogo">
+                                    <image src={localisationLogo}/>
+                                </div>
+                            </Col>
                         </Row>
+                            <div className="error">{this.state.errorPlace}</div>
                         <Row>
                             <Textarea
                                 name="description"
@@ -209,7 +272,7 @@ export default class AddEvent extends Component {
                         </Row>
                         <Row>
                             <Textarea
-                                name="keywords"
+                                name="keyWords"
                                 label="Mots clé"
                                 value={this.state.keyWords}
                                 onChange={this.handleInputChange}
