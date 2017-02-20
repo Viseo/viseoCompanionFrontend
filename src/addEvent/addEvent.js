@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 import {Input, Textarea, Button, Select, Option, Container, Row, Col} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 import localisationLogo from '../images/localisation.png';
 import './addEvent.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -19,9 +20,9 @@ export default class AddEvent extends Component {
             errorPlace:'',
             hours:[],
             time: '',
-            isTimeSet: false,
+            isTimeSet:'',
             date: '',
-            isDateSet: false,
+            isDateSet: '',
             datetime: '',
             keyWords: '',
             description: '',
@@ -33,12 +34,10 @@ export default class AddEvent extends Component {
         this.handlePlaceChange = this.handlePlaceChange.bind(this);
         this.onPressSendNewEvent = this.onPressSendNewEvent.bind(this);
         this.isFormCorrect = this.isFormCorrect.bind(this);
-        this.addEvent = this.addEvent.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
 
         this.generateHours();
-
     }
 
 
@@ -105,41 +104,13 @@ export default class AddEvent extends Component {
     }
 
     handleTimeChange(event) {
-        this.setState({
-            time: event.target.value,
-            isTimeSet: true
-        });
-    }
-
-    async onPressSendNewEvent(){
-        if(this.state.isDateSet && this.state.isTimeSet) {
-            let timeUnix = this.state.time.split(":")[0]*3600 + this.state.time.split(":")[1]*60;
+        if(event.target.value === 0){
+            return;
+        }else {
             this.setState({
-                datetime: this.state.date.valueOf() + timeUnix
-            })
-        }
-        if(this.isFormCorrect()){
-            if(await this.addEvent(
-                this.state.name,
-                this.state.datetime,
-                this.state.keyWords,
-                this.state.place,
-                this.state.description
-            )) {
-                window.location.reload();
-                alert("Evènement ajouté.");
-            } else {
-                alert("Erreur.");
-            }
-        }
-    }
-
-    formatMessage(string1, string2) {
-        if(string1.length !== 0){
-            string1 += " et" + string2;
-            return string1
-        } else {
-            return string2;
+                time: event.target.value,
+                isTimeSet: true
+            });
         }
     }
 
@@ -147,9 +118,13 @@ export default class AddEvent extends Component {
         let hasError = '';
         if (!this.state.isDateSet) {
             hasError = " une date";
-        }
-        if (!this.state.isTimeSet) {
+        }else if (!this.state.isTimeSet) {
             hasError = this.formatMessage(hasError, " une horaire");
+        } else {
+            let timeUnix = (this.state.time.split(":")[0]*3600 + this.state.time.split(":")[1]*60)*1000;
+            this.setState({
+                datetime: this.state.date.valueOf() + timeUnix
+            })
         }
         if (this.state.name === '' && this.state.errorTitle === '') {
             hasError = this.formatMessage(hasError, " un nom correct");
@@ -166,14 +141,25 @@ export default class AddEvent extends Component {
         }
     }
 
+    async onPressSendNewEvent(){
+        if(await this.isFormCorrect()){
+            if(await this.addEvent(
+                    this.state.name,
+                    this.state.datetime,
+                    this.state.keyWords,
+                    this.state.place,
+                    this.state.description
+                )) {
+                window.location.reload();
+                alert("Evènement ajouté.");
+            } else {
+                alert("Erreur.");
+            }
+        }
+    }
+
     async addEvent(name, datetime, keyWords, place, description){
         try{
-            console.warn('New Event:\n');
-            console.warn(datetime);
-            let date = new Date(datetime);
-            console.warn(date);
-            console.warn(place + '\n');
-            console.warn('URL : ' + settings.ADDEVENT_API_URL);
             let response = await fetch(settings.ADDEVENT_API_URL, {
                 method: 'POST',
                 headers: {
@@ -196,13 +182,23 @@ export default class AddEvent extends Component {
         }
     }
 
+    formatMessage(string1, string2) {
+        if(string1.length !== 0){
+            string1 += " et" + string2;
+            return string1
+        } else {
+            return string2;
+        }
+    }
+
     generateHours(){
         const startHour = 8;
         const endHour = 19;
 
+        this.state.hours.push(<Option value="0" label="Horaire" key="Horaire" />);
         for(let i = startHour; i <= endHour; i++) {
             let hourString = i + ":00";
-            this.state.hours.push(<Option value={hourString} label={hourString} key={hourString} />);
+            this.state.hours.push(<Option value={hourString} label={hourString} key={hourString}/>);
             hourString = i + ":30";
             this.state.hours.push(<Option value={hourString} label={hourString} key={hourString} />);
         }
@@ -224,21 +220,20 @@ export default class AddEvent extends Component {
                                 required={true}
                             />
                         </Row>
-                        {/*<Row>*/}
                             <div className="error">{this.state.errorTitle}</div>
-                        {/*</Row>*/}
                         <Row>
                             <Col md="8">
                                 <DatePicker
                                     selected={this.state.date}
                                     onChange={this.handleDateChange}
                                     dateFormat={"DD/MM/YYYY"}
-                                    required={true}
                                     placeholderText="Date"
+                                    todayButton={"Aujourd'hui"}
+                                    minDate={moment()}
                                 />
                             </Col>
                             <Col md="4">
-                                <Select label="Horaire" onClick={this.handleTimeChange} id="time" >
+                                <Select onChange={this.handleTimeChange} id="time" >
                                     {this.state.hours}
                                 </Select>
                             </Col>
@@ -256,7 +251,8 @@ export default class AddEvent extends Component {
                             </Col>
                             <Col md="2">
                                 <div className="localisationLogo">
-                                    <image src={localisationLogo}/>
+                                    <img src={localisationLogo} alt="Localisation" style={{width:26}}/>
+
                                 </div>
                             </Col>
                         </Row>

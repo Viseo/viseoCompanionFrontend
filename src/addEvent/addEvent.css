@@ -1,6 +1,9 @@
 * { box-sizing:border-box; }
 
 /* basic stylings ------------------------------------------ */
+html {
+    font-size: 14px;
+}
 body 				 { }
 .container 		{
     font-family:'Roboto';
@@ -45,20 +48,28 @@ h2 small {
     border-bottom: 1px solid rgba(0, 0, 0, 0.258824);
 }
 
+.react-datepicker-ignore-onclickoutside{
+    text-align: center;
+}
+
+.localisationLogo{
+    margin-top: 30px;
+}
+
     /* form starting stylings ------------------------------- */
 .group 			  {
     position:relative;
     margin-bottom:45px;
 }
 input				{
-
+    text-align: center;
     font-size:16px;
     padding:10px 10px 10px 5px;
     display:block;
     width:100%;
     border:none;
     border-bottom:1px solid rgba(0, 0, 0, 0.258824);
-    color: rgba(0,0,0,.26);
+    color: rgb(0, 0, 0);
 }
 input:focus 		{ outline:none; }
 
@@ -70,8 +81,13 @@ input:focus 		{ outline:none; }
 }
 
 .mui-select{
-    position: absolute;
+    height: 26px;
+    position: relative;
     z-index: 1;
+}
+
+.mui-select>select{
+    color: #6d6d6d;
 }
 
 .mui-select:visited{
@@ -80,7 +96,7 @@ input:focus 		{ outline:none; }
 }
 
 .mui-textfield>textarea {
-    min-height: 20px;
+    /*min-height: 20px;*/
 }
 
 .mui-select__menu {
@@ -88,13 +104,23 @@ input:focus 		{ outline:none; }
     max-height: 200px;
 }
 
+.mui-scroll-lock {
+    padding-right: 0px;
+}
+
 .mui-col-md-8 {
     padding-left: 0px;
+    margin-top: 9px;
 }
 
 .mui-col-md-10 {
     padding-left: 0px;
 }
+
+.mui-col-md-4 {
+    padding: 0px;
+}
+
 /* LABEL ======================================= */
 label 				 {
     color:#999;
