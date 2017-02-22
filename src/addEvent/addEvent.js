@@ -184,7 +184,7 @@ export default class AddEvent extends Component {
 
     formatMessage(string1, string2) {
         if(string1.length !== 0){
-            string1 += " et" + string2;
+            string1 += " /" + string2;
             return string1
         } else {
             return string2;
