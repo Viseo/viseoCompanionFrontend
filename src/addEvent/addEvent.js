@@ -153,7 +153,7 @@ export default class AddEvent extends Component {
                 window.location.reload();
                 alert("Evènement ajouté.");
             } else {
-                alert("Erreur.");
+                alert("Erreur lors de l'envois au serveur.");
             }
         }
     }
