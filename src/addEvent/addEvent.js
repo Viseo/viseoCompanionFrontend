@@ -49,7 +49,7 @@ export default class AddEvent extends Component {
             name:value
         });
 
-        if(value.length <= 2 ) {
+        if(value.length < 2 ) {
             this.setState({
                 errorTitle:'Le nom doit contenir au moins deux caractères.'
             });
@@ -72,7 +72,7 @@ export default class AddEvent extends Component {
             place:value
         });
 
-        if(value.length <= 2 ) {
+        if(value.length < 2 ) {
             this.setState({
                 errorPlace:'Le lieu doit contenir au moins deux caractères.'
             });
@@ -119,7 +119,7 @@ export default class AddEvent extends Component {
         if (!this.state.isDateSet) {
             hasError = " une date";
         }else if (!this.state.isTimeSet) {
-            hasError = this.formatMessage(hasError, " une horaire");
+            hasError = this.formatMessage(hasError, " un horaire");
         } else {
             let timeUnix = (this.state.time.split(":")[0]*3600 + this.state.time.split(":")[1]*60)*1000;
             this.setState({

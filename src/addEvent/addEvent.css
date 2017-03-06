@@ -98,7 +98,8 @@ input:focus 		{ outline:none; }
 }
 
 .mui-textfield>textarea {
-    /*min-height: 20px;*/
+    min-height: 0px;
+    resize: none;
 }
 
 .mui-select__menu {
@@ -122,6 +123,10 @@ input:focus 		{ outline:none; }
 
 .mui-col-md-4 {
     padding: 0px;
+}
+
+textarea{
+    color: red;
 }
 
 /* LABEL ======================================= */
