@@ -40,6 +40,23 @@ export default class AddEvent extends Component {
         this.generateHours();
     }
 
+    emptyFields(){
+        this.setState({
+            name: '',
+            place: '',
+            errorPlace:'',
+            hours:[],
+            time: '',
+            isTimeSet:'',
+            date: '',
+            isDateSet: '',
+            datetime: '',
+            keyWords: '',
+            description: '',
+            errorTitle:'',
+            errorType:''
+        })
+    }
 
     handleTitleChange(event) {
         let value = event.target.value;
@@ -104,8 +121,10 @@ export default class AddEvent extends Component {
     }
 
     handleTimeChange(event) {
-        if(event.target.value === 0){
-            return;
+        if(parseInt(event.target.value, 10) === 0){
+            this.setState({
+                isTimeSet: false
+            });
         }else {
             this.setState({
                 time: event.target.value,
@@ -126,10 +145,10 @@ export default class AddEvent extends Component {
                 datetime: this.state.date.valueOf() + timeUnix
             })
         }
-        if (this.state.name === '' && this.state.errorTitle === '') {
+        if (this.state.name === '' || this.state.errorTitle !== '') {
             hasError = this.formatMessage(hasError, " un nom correct");
         }
-        if (this.state.place === '' && this.state.errorPlace === '') {
+        if (this.state.place === '' || this.state.errorPlace !== '') {
             hasError = this.formatMessage(hasError, " un lieu correct");
         }
 
@@ -150,7 +169,9 @@ export default class AddEvent extends Component {
                     this.state.place,
                     this.state.description
                 )) {
-                window.location.reload();
+                //window.location.reload();
+                //todo diplay message during 5 second + handle the red soulignage qui reste quand on vide les champs
+                this.emptyFields();
                 alert("Evènement ajouté.");
             } else {
                 alert("Erreur lors de l'envois au serveur.");
