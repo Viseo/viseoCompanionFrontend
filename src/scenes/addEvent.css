@@ -38,7 +38,6 @@ h2 small {
 }
 
 .error {
-    /*margin-top: 30px;*/
     margin-bottom: 8px;
     background: rgba(255, 24, 24, 0.11);
     color: red;
@@ -46,8 +45,23 @@ h2 small {
     font-size: 13px;
 }
 
+.success {
+    margin-bottom: 8px;
+    background: rgba(47, 255, 30, 0.11);
+    color: #1f5618;
+    border-radius: 10px;
+    font-size: 15px;
+    opacity: 0;
+    transition: opacity 5s ease-in;
+}
+
 .datepicker {
     border-bottom: 1px solid rgba(0, 0, 0, 0.258824);
+}
+
+.datepicker_empty {
+    border-bottom: 2px solid rgba(255, 11, 5, 0.91);
+
 }
 
 .react-datepicker-ignore-onclickoutside{
@@ -82,6 +96,44 @@ input:focus 		{ outline:none; }
     position: relative;
 }
 
+.test{
+    color: #000;
+}
+
+select{
+    display: block;
+    height: 32px;
+    line-height: 32px;
+    width: 100%;
+    -moz-appearance: none;
+    outline: 0;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,.26);
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 16px;
+    padding-left: 20px;
+}
+
+.select_empty{
+    border-bottom: 2px solid rgb(255, 11, 5);
+    color: black;
+}
+
+.select_filled{
+    color: black;
+}
+
+option {
+    background: transparent;
+    font-size: 16px;
+    line-height: 10;
+    border: 0;
+    border-radius: 0;
+    height: 5px;
+    -webkit-appearance: none;
+}
+
 .mui-select{
     height: 26px;
     position: relative;
@@ -90,6 +142,7 @@ input:focus 		{ outline:none; }
 
 .mui-select>select{
     color: #6d6d6d;
+    padding-left: 32px;
 }
 
 .mui-select:visited{
@@ -123,6 +176,7 @@ input:focus 		{ outline:none; }
 
 .mui-col-md-4 {
     padding: 0px;
+    margin-top: 17px
 }
 
 textarea{
@@ -130,6 +184,12 @@ textarea{
 }
 
 /* LABEL ======================================= */
+.mui-textfield.mui-textfield--float-label > label {
+    font-size: 16px;
+    color: rgba(0,0,0,.26);
+}
+
+
 label 				 {
     color:#999;
     font-size:18px;

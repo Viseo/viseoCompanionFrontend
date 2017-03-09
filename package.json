@@ -3,23 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.4.0",
+    "chai": "^3.5.0",
     "enzyme": "^2.7.1",
+    "expect-enzyme": "^0.13.1",
+    "jsdom": "^9.11.0",
     "mocha": "^3.2.0",
+    "react": "^15.4.2",
+    "react-addons-test-utils": "^15.4.2",
+    "react-dom": "^15.4.2",
     "react-native-mock": "^0.3.1",
     "react-scripts": "0.9.0"
   },
   "dependencies": {
+    "istanbul": "^0.4.5",
     "moment": "^2.17.1",
     "muicss": "^0.9.9-rc2",
     "react": "^15.4.2",
     "react-datepicker": "^0.41.1",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "react-router": "^3.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "testEnzyme": "mocha --require react-native-mock/mock.js --compilers js:babel-core/register --recursive test/*.js",
+    "testMocha": "mocha test/setup.js --compilers js:babel-core/register src/**/*.spec.js",
+    "testMochaEXP": "mocha  --require ./test/setup.js --compilers js:babel-core/register src/**/*.spec.js",
+    "test": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- --opts mocha.opts src/**/*.spec.js",
+    "testReact": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
 }
