@@ -1,25 +1,30 @@
-// require('babel-register')();
-require('babel-core/register')({
-    ignore: /node_modules\/(?!ProjectB)/
-});
+require('babel-polyfill');
+require('isomorphic-fetch');
 
-var jsdom = require('jsdom').jsdom;
+import jsdom from 'jsdom';
+import chai from 'chai';
 
-var exposedProperties = ['window', 'navigator', 'document'];
+const doc = jsdom.jsdom('<!DOCTYPE html><html><body></body></html>');
+const win = doc.defaultView;
 
-global.document = jsdom('');
-global.window = document.defaultView;
-Object.keys(document.defaultView).forEach((property) => {
-    if (typeof global[property] === 'undefined') {
-        exposedProperties.push(property);
-        global[property] = document.defaultView[property];
+global.document = doc;
+global.window = win;
+global.expect = chai.expect;
+
+Object.keys(window).forEach((key) => {
+    if(!(key in global)) {
+        global[key] = window[key];
     }
 });
 
-global.navigator = {
-    userAgent: 'node.js'
+
+//for image issue
+const m = require('module');
+const originalLoader = m._load;
+m._load = function hookedLoader(request, parent, isMain) {
+    if (request.match(/.jpeg|.jpg|.png$/)) {
+        return { uri: request };
+    }
+
+    return originalLoader(request, parent, isMain);
 };
-
-documentRef = document;
-
-

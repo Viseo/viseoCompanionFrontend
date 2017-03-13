@@ -18,7 +18,6 @@ export default class AddEvent extends Component {
             name: '',
             isNameRequired:true,
             place: '',
-            isPlaceRequired:true,
             errorPlace:'',
             hours:[],
             time: '',
@@ -52,7 +51,7 @@ export default class AddEvent extends Component {
             name: '',
             isNameRequired: false,
             place: '',
-            isPlaceRequired: false,
+            placeRequired: false,
             errorPlace:'',
             time: '',
             isTimeSet:'',
@@ -94,7 +93,7 @@ export default class AddEvent extends Component {
         const regexPlace =/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\s\-']*$/;
         this.setState({
             place:value,
-            isPlaceRequired: true,
+            placeRequired: true,
         });
         if(value.length < 2 ) {
             this.setState({
@@ -154,7 +153,7 @@ export default class AddEvent extends Component {
         }else if (!this.state.isTimeSet) {
             hasError = this.formatMessage(hasError, " un horaire");
         } else {
-            let timeUnix = (this.state.time.split(":")[0]*3600 + this.state.time.split(":")[1]*60)*1000;
+            let timeUnix = (this.state.time.split(":")[0]*3600 + this.state.time.split(":")[1]*60 + 3600)*1000;
             this.setState({
                 datetime: this.state.date.valueOf() + timeUnix
             })
@@ -194,7 +193,7 @@ export default class AddEvent extends Component {
 
     async addEvent(name, datetime, keyWords, place, description){
         try{
-            let response = await fetch(settings.ADDEVENT_API_URL, {
+            let response = await fetch(settings.api.addEvent, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -295,7 +294,7 @@ export default class AddEvent extends Component {
                                     floatingLabel={true}
                                     onChange={this.handlePlaceChange}
                                     onClick={this.handlePlaceChange}
-                                    required={this.state.isPlaceRequired}
+                                    required={this.state.placeRequired}
                                 />
                             </Col>
                             <Col md="2">
