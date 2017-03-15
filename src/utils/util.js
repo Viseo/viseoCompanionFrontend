@@ -11,12 +11,12 @@ export function isNameValid(name) {
     }
 }
 
-export function isPlaceValid(place) {
-    if(place.length < 2){
+export function isLocationValid(location) {
+    if(location.length < 2){
         return -2;
     } else {
-        const regexPlace = /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\s\-']*$/;
-        return regexPlace.test(place);
+        const regexLocation = /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\s\-']*$/;
+        return regexLocation.test(location);
     }
 }
 

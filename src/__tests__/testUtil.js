@@ -12,12 +12,24 @@ import {shallow} from 'enzyme';
 
 import AddEvent from '../scenes/addEvent';
 
-function checkFieldContent(component, fieldName, filedValue) {
-    expect(component.find(fieldName).text()).to.equal(filedValue);
+function checkTitleContent(component, titleName, filedValue) {
+    expect(component.find(titleName).text()).to.equal(filedValue);
 }
 
-function checkIfInputExist(component, inputClassName) {
-    expect(component.find('.' + inputClassName).exists()).to.equal(true);
+function checkIfClassExist(component, className) {
+    expect(component.find('.' + className).exists()).to.equal(true);
+}
+
+function checkDivContent(component, divClassName, contentValue) {
+    expect(component.find('.' + divClassName).props().children).to.equal(contentValue);
+}
+
+function simulateTextInput(component, inputClassName, textValue){
+    component.find('.' + inputClassName).simulate('change', { target: {value: textValue} });
+}
+
+function simulateClickOnButton(component, buttonClassName){
+    component.find('.' + buttonClassName).simulate('click');
 }
 
 function createAddEvent(){
@@ -25,9 +37,12 @@ function createAddEvent(){
 }
 
 const testUtil = {
-    checkFieldContent,
+    checkTitleContent,
     createAddEvent,
-    checkIfInputExist
+    checkIfClassExist,
+    simulateTextInput,
+    checkDivContent,
+    simulateClickOnButton
 };
 
 export default testUtil;

@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import placeLogo from '../images/placeLogo.png';
+import locationLogo from '../images/locationLogo.png';
 import './addEvent.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import Event from '../utils/event';
@@ -18,9 +18,11 @@ export default class AddEvent extends Component {
         super(props);
         this.state = {
             name: '',
+            errorName: '',
             isNameRequired: true,
-            place: '',
-            errorPlace: '',
+            location: '',
+            errorLocation: '',
+            isLocationRequired: false,
             hours: [],
             time: '',
             isTimeSet: '',
@@ -31,9 +33,7 @@ export default class AddEvent extends Component {
             datetime: '',
             keyWords: '',
             description: '',
-            errorTitle: '',
-            errorType: '',
-            successMessage: 'Evènement ajouté !',
+            errorType: ''
         };
         this.generateSelectHours();
     }
@@ -42,9 +42,9 @@ export default class AddEvent extends Component {
         this.setState({
             name: '',
             isNameRequired: false,
-            place: '',
-            placeRequired: false,
-            errorPlace: '',
+            location: '',
+            isLocationRequired: false,
+            errorLocation: '',
             time: '',
             isTimeSet: '',
             date: '',
@@ -52,7 +52,7 @@ export default class AddEvent extends Component {
             datetime: '',
             keyWords: '',
             description: '',
-            errorTitle: '',
+            errorName: '',
             errorType: '',
             timeStyle: 'select_notVisited',
         })
@@ -91,10 +91,10 @@ export default class AddEvent extends Component {
                 datetime: util.getDateTime(this.state.date, this.state.time)
             })
         }
-        if (this.state.name === '' || this.state.errorTitle !== '') {
+        if (this.state.name === '' || this.state.errorName !== '') {
             hasError = util.formatMessageWithSlash(hasError, " un nom correct");
         }
-        if (this.state.place === '' || this.state.errorPlace !== '') {
+        if (this.state.location === '' || this.state.errorLocation !== '') {
             hasError = util.formatMessageWithSlash(hasError, " un lieu correct");
         }
 
@@ -108,7 +108,7 @@ export default class AddEvent extends Component {
 
     onPressSendNewEvent = async () => {
         if (await this.isFormCorrect()) {
-            let newEvent = new Event(null, this.state.name, this.state.description, this.state.datetime, this.state.place, this.state.keyWords)
+            let newEvent = new Event(null, this.state.name, this.state.description, this.state.datetime, this.state.location, this.state.keyWords)
             if (await db.addEvent(newEvent)) {
                 this.emptyFields();
                 this.diplaySuccessMessage();
@@ -118,7 +118,7 @@ export default class AddEvent extends Component {
         }
     };
 
-    handleTitleChange = (event) => {
+    handleNameChange = (event) => {
         let inputValue = event.target.value;
         this.setState({
             name: inputValue,
@@ -127,37 +127,37 @@ export default class AddEvent extends Component {
         let isNameValid = util.isNameValid(inputValue);
         if (isNameValid === -2) {
             this.setState({
-                errorTitle: 'Le nom doit contenir au moins deux caractères.'
+                errorName: 'Le nom doit contenir au moins deux caractères.'
             });
         } else if (!isNameValid) {
             this.setState({
-                errorTitle: 'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !'
+                errorName: 'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !'
             });
         } else {
             this.setState({
-                errorTitle: ''
+                errorName: ''
             });
         }
     };
 
-    handlePlaceChange = (event) => {
+    handleLocationChange = (event) => {
         let inputValue = event.target.value;
         this.setState({
-            place: inputValue,
-            placeRequired: true,
+            location: inputValue,
+            isLocationRequired: true,
         });
-        let isPlaceValid = util.isPlaceValid(inputValue);
-        if (isPlaceValid === -2) {
+        let isLocationValid = util.isLocationValid(inputValue);
+        if (isLocationValid === -2) {
             this.setState({
-                errorPlace: 'Le lieu doit contenir au moins deux caractères.'
+                errorLocation: 'Le lieu doit contenir au moins deux caractères.'
             });
-        } else if (!isPlaceValid) {
+        } else if (!isLocationValid) {
             this.setState({
-                errorPlace: 'Le lieu doit seulement contenir des caractères alphanumériques, tiret ou apostrophe.'
+                errorLocation: 'Le lieu doit seulement contenir des caractères alphanumériques, tiret ou apostrophe.'
             });
         } else {
             this.setState({
-                errorPlace: ''
+                errorLocation: ''
             });
         }
     };
@@ -211,14 +211,41 @@ export default class AddEvent extends Component {
                     className="nameInput"
                     value={this.state.name}
                     floatingLabel={true}
-                    onChange={this.handleTitleChange}
-                    onClick={this.handleTitleChange}
+                    onChange={this.handleNameChange}
+                    onClick={this.handleNameChange}
                     required={this.state.isNameRequired}
                 />
-                <div className="error errorName">{this.state.errorTitle}</div>
+                <div className="error errorName">{this.state.errorName}</div>
             </div>
         );
     };
+
+    renderLocationInput() {
+        return (
+            <div>
+                <Row>
+                    <Col md="10">
+                        <Input
+                            name="location"
+                            label="Lieu"
+                            className="locationInput"
+                            value={this.state.location}
+                            floatingLabel={true}
+                            onChange={this.handleLocationChange}
+                            onClick={this.handleLocationChange}
+                            required={this.state.isLocationRequired}
+                        />
+                    </Col>
+                    <Col md="2">
+                        <div className="locationLogo">
+                            <img src={locationLogo} alt="location" style={{width: 26}}/>
+                        </div>
+                    </Col>
+                </Row>
+                <div className="error errorLocation">{this.state.errorLocation}</div>
+            </div>
+        );
+    }
 
     renderDateInput () {
         return (
@@ -240,33 +267,6 @@ export default class AddEvent extends Component {
                     value={this.state.time}>
                 {this.state.hours}
             </select>
-        );
-    }
-
-    renderPlaceInput() {
-        return (
-            <div>
-                <Row>
-                    <Col md="10">
-                        <Input
-                            name="place"
-                            label="Lieu"
-                            className="placeInput"
-                            value={this.state.place}
-                            floatingLabel={true}
-                            onChange={this.handlePlaceChange}
-                            onClick={this.handlePlaceChange}
-                            required={this.state.placeRequired}
-                        />
-                    </Col>
-                    <Col md="2">
-                        <div className="placeLogo">
-                            <img src={placeLogo} alt="place" style={{width: 26}}/>
-                        </div>
-                    </Col>
-                </Row>
-                <div className="error errorPlace">{this.state.errorPlace}</div>
-            </div>
         );
     }
 
@@ -300,7 +300,7 @@ export default class AddEvent extends Component {
         let nameInput = this.renderNameInput();
         let dateInput = this.renderDateInput();
         let timeInput = this.renderTimeInput();
-        let placeInput = this.renderPlaceInput();
+        let locationInput = this.renderLocationInput();
         let descriptionInput = this.renderDescriptionInput();
         let ketWordsInput = this.renderKeyWordsInput();
         return (
@@ -320,7 +320,7 @@ export default class AddEvent extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            {placeInput}
+                            {locationInput}
                         </Row>
                         <Row>
                             {descriptionInput}
@@ -330,14 +330,18 @@ export default class AddEvent extends Component {
                         </Row>
                         <Row>
                             <div className="error errorForm">{this.state.errorType}</div>
-                            <div className="success" ref={(success) => {
-                                this.success = success;
-                            }}>{this.state.successMessage}</div>
+                            <div
+                                className="success"
+                                ref={(success) => {
+                                    this.success = success;
+                                }}
+                            >Evènement ajouté !</div>
                         </Row>
                         <Row>
                             <Button
                                 variant="flat"
                                 color="primary"
+                                className="submitButton"
                                 onClick={this.onPressSendNewEvent}
                             >
                                 Ajouter
