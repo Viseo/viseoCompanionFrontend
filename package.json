@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "babel": "^6.23.0",
-    "babel-core": "^6.23.1",
-    "babel-jest": "^19.0.0",
+    "babel-jest": "18.0.0",
     "babel-loader": "^6.4.0",
     "babel-plugin-istanbul": "^4.0.0",
     "babel-polyfill": "^6.23.0",
@@ -16,11 +14,17 @@
     "enzyme": "^2.7.1",
     "ignore-styles": "^5.0.1",
     "isomorphic-fetch": "^2.2.1",
-    "jsdom": "^9.11.0",
+    "istanbul": "^1.0.0-alpha.2",
+    "jest": "18.1.0",
+    "jsdom": "^9.12.0",
     "mocha": "^3.2.0",
     "nyc": "^10.1.2",
     "react-addons-test-utils": "^15.4.2",
-    "react-scripts": "0.9.4"
+    "react-dom": "^15.4.0",
+    "react-script": "^2.0.5",
+    "react-scripts": "^0.9.5",
+    "react-test-renderer": "~15.4.0",
+    "sinon": "^2.0.0-pre.6"
   },
   "dependencies": {
     "istanbul": "^0.4.5",
@@ -35,6 +39,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "mocha --compilers js:babel-core/register --opts mocha.opts src/**/*.spec.js",
+    "testistanbul": "babel-node node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- --opts mocha.opts src/**/*.spec.js",
     "Test+Coverage": "nyc -all -e .jsx npm test",
     "CoverageReport": "nyc report"
   },
@@ -44,6 +49,9 @@
       "stage-0",
       "react"
     ]
+  },
+  "jest": {
+    "preset": "react"
   },
   "nyc": {
     "include": [

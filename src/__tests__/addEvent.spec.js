@@ -1,30 +1,17 @@
 /**
  * Created by LMA3606 on 09/03/2017.
  */
-import React from 'react';
-import {
-    renderIntoDocument,
-    findRenderedDOMComponentWithTag,
-    scryRenderedDOMComponentsWithTag,
-    Simulate
-} from 'react-addons-test-utils';
-import {shallow} from 'enzyme';
-
-import AddEvent from '../scenes/addEvent';
 import testUtil from './testUtil';
 
-describe('Add event page', () => {
-    it('should have a title', () => {
-        // const component = renderIntoDocument(
-        //     <AddEvent/>
-        // );
-        // testUtil.checkFieldContent(component, 'h1', "Ajouter Evènement");
-
-        const checkbox = shallow(
-            <AddEvent />
-        );
-
-        expect(checkbox.text()).to.equal('Off');
-
+describe('In the Add event page the user', () => {
+    const addEvent = testUtil.createAddEvent();
+    it('should see the title', () => {
+        testUtil.checkFieldContent(addEvent, "h1", "Ajouter Evènement");
+    });
+    it('should type a event name, place, description and Keyword', () => {
+        testUtil.checkIfInputExist(addEvent, 'nameInput');
+        testUtil.checkIfInputExist(addEvent, 'placeInput');
+        testUtil.checkIfInputExist(addEvent, 'descriptionInput');
+        testUtil.checkIfInputExist(addEvent, 'keyWordsInput');
     })
-})
+});

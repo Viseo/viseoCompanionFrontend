@@ -3,166 +3,99 @@
  */
 
 import React, {Component} from 'react';
-import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import localisationLogo from '../images/localisation.png';
+import placeLogo from '../images/placeLogo.png';
 import './addEvent.css';
 import 'react-datepicker/dist/react-datepicker.css';
-import settings from '../config/settings'
+import Event from '../utils/event';
+import db from '../utils/db';
+import * as util from '../utils/util';
+import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
 
 export default class AddEvent extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: '',
-            isNameRequired:true,
+            isNameRequired: true,
             place: '',
-            errorPlace:'',
-            hours:[],
+            errorPlace: '',
+            hours: [],
             time: '',
-            isTimeSet:'',
-            timeStyle:'',
+            isTimeSet: '',
+            timeStyle: '',
             date: '',
             isDateSet: '',
             datepickerStyle: '',
             datetime: '',
             keyWords: '',
             description: '',
-            errorTitle:'',
-            errorType:'',
+            errorTitle: '',
+            errorType: '',
             successMessage: 'Evènement ajouté !',
         };
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleTitleChange = this.handleTitleChange.bind(this);
-        this.handlePlaceChange = this.handlePlaceChange.bind(this);
-        this.onPressSendNewEvent = this.onPressSendNewEvent.bind(this);
-        this.isFormCorrect = this.isFormCorrect.bind(this);
-        this.handleDateChange = this.handleDateChange.bind(this);
-        this.handleTimeChange = this.handleTimeChange.bind(this);
-        this.diplaySuccessMessage = this.diplaySuccessMessage.bind(this);
-        this.emptyFields = this.emptyFields.bind(this);
-
-        this.generateHours();
+        this.generateSelectHours();
     }
 
-    emptyFields(){
+    emptyFields = () => {
         this.setState({
             name: '',
             isNameRequired: false,
             place: '',
             placeRequired: false,
-            errorPlace:'',
+            errorPlace: '',
             time: '',
-            isTimeSet:'',
+            isTimeSet: '',
             date: '',
             isDateSet: '',
             datetime: '',
             keyWords: '',
             description: '',
-            errorTitle:'',
-            errorType:'',
+            errorTitle: '',
+            errorType: '',
+            timeStyle: 'select_notVisited',
         })
+    };
 
-    }
+    generateSelectHours() {
+        const startHour = 8;
+        const endHour = 19;
 
-    handleTitleChange(event) {
-        let value = event.target.value;
-        const regexTitle =/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ.\s\-,'?!"/+*#]*$/;
-        this.setState({
-            name:value,
-            isNameRequired: true
-        });
-        if(value.length < 2 ) {
-            this.setState({
-                errorTitle:'Le nom doit contenir au moins deux caractères.'
-            });
-        }else if(!regexTitle.test(value)){
-            this.setState({
-            errorTitle:'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !'
-            });
-        }else {
-            this.setState({
-                errorTitle:''
-            });
+        this.state.hours.push(<Option value="0" label="Horaire" key="Horaire"/>);
+        for (let i = startHour; i <= endHour; i++) {
+            let hourString = i + ":00";
+            this.state.hours.push(<Option value={hourString} label={hourString} key={hourString}/>);
+            hourString = i + ":30";
+            this.state.hours.push(<Option value={hourString} label={hourString} key={hourString}/>);
         }
-    }
+    };
 
-    handlePlaceChange(event) {
-        let value = event.target.value;
-        const regexPlace =/^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\s\-']*$/;
-        this.setState({
-            place:value,
-            placeRequired: true,
-        });
-        if(value.length < 2 ) {
-            this.setState({
-                errorPlace:'Le lieu doit contenir au moins deux caractères.'
-            });
-        }else if(!regexPlace.test(value)){
-            this.setState({
-                errorPlace:'Le lieu doit seulement contenir des caractères alphanumériques, tiret ou apostrophe.'
-            });
-        }else {
-            this.setState({
-                errorPlace:''
-            });
-        }
-    }
+    diplaySuccessMessage = () => {
+        this.success.style.transition = 'initial';
+        this.success.style.opacity = 100;
+        setTimeout(() => {
+            this.success.style.transition = 'opacity 5s ease-in';
+            this.success.style.opacity = 0;
+        }, 10);
+    };
 
-    handleInputChange(event) {
-        const target = event.target;
-        const name = target.name;
-
-        this.setState({
-            [name]: target.value,
-        });
-    }
-
-    handleDateChange(date) {
-        let datepickerStyle = date ? 'datepicker' : 'datepicker_empty';
-        this.setState({
-            datepickerStyle,
-            date,
-            isDateSet:true
-        });
-    }
-
-    handleTimeChange(event) {
-        this.setState({
-            timeStyle:'select_filled',
-        });
-        if(parseInt(event.target.value, 10) === 0){
-            this.setState({
-                time:'',
-                isTimeSet: false,
-                timeStyle:'select_empty'
-            });
-        }else {
-            this.setState({
-                time: event.target.value,
-                isTimeSet: true
-            });
-        }
-    }
-
-    isFormCorrect() {
+    isFormCorrect = () => {
         let hasError = '';
         if (!this.state.isDateSet) {
-            hasError = " une date";
-        }else if (!this.state.isTimeSet) {
-            hasError = this.formatMessage(hasError, " un horaire");
+            hasError = " une date correcte";
+        } else if (!this.state.isTimeSet) {
+            hasError = util.formatMessageWithSlash(hasError, " un horaire");
         } else {
-            let timeUnix = (this.state.time.split(":")[0]*3600 + this.state.time.split(":")[1]*60 + 3600)*1000;
             this.setState({
-                datetime: this.state.date.valueOf() + timeUnix
+                datetime: util.getDateTime(this.state.date, this.state.time)
             })
         }
         if (this.state.name === '' || this.state.errorTitle !== '') {
-            hasError = this.formatMessage(hasError, " un nom correct");
+            hasError = util.formatMessageWithSlash(hasError, " un nom correct");
         }
         if (this.state.place === '' || this.state.errorPlace !== '') {
-            hasError = this.formatMessage(hasError, " un lieu correct");
+            hasError = util.formatMessageWithSlash(hasError, " un lieu correct");
         }
 
         if (hasError !== '') {
@@ -171,163 +104,244 @@ export default class AddEvent extends Component {
         } else {
             return true;
         }
-    }
+    };
 
-    async onPressSendNewEvent(){
-        if(await this.isFormCorrect()){
-            if(await this.addEvent(
-                    this.state.name,
-                    this.state.datetime,
-                    this.state.keyWords,
-                    this.state.place,
-                    this.state.description,
-                )) {
-                // window.location.reload();
+    onPressSendNewEvent = async () => {
+        if (await this.isFormCorrect()) {
+            let newEvent = new Event(null, this.state.name, this.state.description, this.state.datetime, this.state.place, this.state.keyWords)
+            if (await db.addEvent(newEvent)) {
                 this.emptyFields();
                 this.diplaySuccessMessage();
             } else {
                 alert("Erreur lors de l'envois au serveur.");
             }
         }
-    }
+    };
 
-    async addEvent(name, datetime, keyWords, place, description){
-        try{
-            let response = await fetch(settings.api.addEvent, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "name": name,
-                    "datetime": datetime,
-                    "description": description,
-                    "keyWords": keyWords,
-                    "place": place,
-                })
-            })
-            response = await response.status;
-            if(parseInt(response, 10) === 200){
-                return true;
-            } else {
-                return false;
-            }
-        } catch (error){
-            console.warn(error);
-        }
-    }
-
-    formatMessage(string1, string2) {
-        if(string1.length !== 0){
-            string1 += " /" + string2;
-            return string1
+    handleTitleChange = (event) => {
+        let inputValue = event.target.value;
+        this.setState({
+            name: inputValue,
+            isNameRequired: true
+        });
+        let isNameValid = util.isNameValid(inputValue);
+        if (isNameValid === -2) {
+            this.setState({
+                errorTitle: 'Le nom doit contenir au moins deux caractères.'
+            });
+        } else if (!isNameValid) {
+            this.setState({
+                errorTitle: 'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !'
+            });
         } else {
-            return string2;
+            this.setState({
+                errorTitle: ''
+            });
         }
+    };
+
+    handlePlaceChange = (event) => {
+        let inputValue = event.target.value;
+        this.setState({
+            place: inputValue,
+            placeRequired: true,
+        });
+        let isPlaceValid = util.isPlaceValid(inputValue);
+        if (isPlaceValid === -2) {
+            this.setState({
+                errorPlace: 'Le lieu doit contenir au moins deux caractères.'
+            });
+        } else if (!isPlaceValid) {
+            this.setState({
+                errorPlace: 'Le lieu doit seulement contenir des caractères alphanumériques, tiret ou apostrophe.'
+            });
+        } else {
+            this.setState({
+                errorPlace: ''
+            });
+        }
+    };
+
+    handleInputChange = (event) => {
+        const stateName = event.target.name;
+        const stateValue = event.target.value;
+
+        this.setState({
+            [stateName]: stateValue,
+        });
+    };
+
+    handleDateChange = (date) => {
+        if (date) {
+            this.setState({
+                datepickerStyle:'datepicker',
+                date,
+                isDateSet: true,
+            });
+        } else {
+            this.setState({
+                datepickerStyle:'datepicker_empty',
+                isDateSet: false,
+            })
+        }
+    };
+
+    handleTimeChange = (event) => {
+        if (parseInt(event.target.value, 10) === 0) {
+            this.setState({
+                time: '',
+                isTimeSet: false,
+                timeStyle: 'select_empty'
+            });
+        } else {
+            this.setState({
+                time: event.target.value,
+                isTimeSet: true,
+                timeStyle: 'select_filled',
+            });
+        }
+    };
+
+    renderNameInput() {
+        return (
+            <div>
+                <Input
+                    name="name"
+                    label="Nom de l'évènement"
+                    className="nameInput"
+                    value={this.state.name}
+                    floatingLabel={true}
+                    onChange={this.handleTitleChange}
+                    onClick={this.handleTitleChange}
+                    required={this.state.isNameRequired}
+                />
+                <div className="error errorName">{this.state.errorTitle}</div>
+            </div>
+        );
+    };
+
+    renderDateInput () {
+        return (
+            <DatePicker
+                selected={this.state.date}
+                onChange={this.handleDateChange}
+                dateFormat={"DD/MM/YYYY"}
+                placeholderText="Date"
+                todayButton={"Aujourd'hui"}
+                minDate={moment()}
+                className={this.state.datepickerStyle}
+            />
+        );
     }
 
-    generateHours(){
-        const startHour = 8;
-        const endHour = 19;
-
-        this.state.hours.push(<Option value="0" label="Horaire" key="Horaire" />);
-        for(let i = startHour; i <= endHour; i++) {
-            let hourString = i + ":00";
-            this.state.hours.push(<Option value={hourString} label={hourString} key={hourString}/>);
-            hourString = i + ":30";
-            this.state.hours.push(<Option value={hourString} label={hourString} key={hourString} />);
-        }
+    renderTimeInput() {
+        return (
+            <select className={this.state.timeStyle} onClick={this.handleTimeChange} onChange={this.handleTimeChange}
+                    value={this.state.time}>
+                {this.state.hours}
+            </select>
+        );
     }
 
-    diplaySuccessMessage(){
-        this.success.style.transition = 'initial';
-        this.success.style.opacity = 100;
-        setTimeout(() => {
-            this.success.style.transition = 'opacity 5s ease-in';
-            this.success.style.opacity = 0;
-        }, 10);
+    renderPlaceInput() {
+        return (
+            <div>
+                <Row>
+                    <Col md="10">
+                        <Input
+                            name="place"
+                            label="Lieu"
+                            className="placeInput"
+                            value={this.state.place}
+                            floatingLabel={true}
+                            onChange={this.handlePlaceChange}
+                            onClick={this.handlePlaceChange}
+                            required={this.state.placeRequired}
+                        />
+                    </Col>
+                    <Col md="2">
+                        <div className="placeLogo">
+                            <img src={placeLogo} alt="place" style={{width: 26}}/>
+                        </div>
+                    </Col>
+                </Row>
+                <div className="error errorPlace">{this.state.errorPlace}</div>
+            </div>
+        );
+    }
+
+    renderDescriptionInput() {
+        return (
+            <Textarea
+                name="description"
+                label="Description"
+                className="descriptionInput"
+                value={this.state.description}
+                onChange={this.handleInputChange}
+                floatingLabel={true}
+            />
+        );
+    }
+
+    renderKeyWordsInput() {
+        return (
+            <Textarea
+                name="keyWords"
+                label="Mots clé"
+                className="keyWordsInput"
+                value={this.state.keyWords}
+                onChange={this.handleInputChange}
+                floatingLabel={true}
+            />
+        );
     }
 
     render() {
+        let nameInput = this.renderNameInput();
+        let dateInput = this.renderDateInput();
+        let timeInput = this.renderTimeInput();
+        let placeInput = this.renderPlaceInput();
+        let descriptionInput = this.renderDescriptionInput();
+        let ketWordsInput = this.renderKeyWordsInput();
         return (
             <div className="new-event-form">
                 <h1>Ajouter Evènement</h1>
                 <div className="form">
                     <Container>
                         <Row>
-                            <Input
-                                name="name"
-                                label="Nom de l'évènement"
-                                className="test"
-                                value={this.state.name}
-                                floatingLabel={true}
-                                onChange={this.handleTitleChange}
-                                onClick={this.handleTitleChange}
-                                required={this.state.isNameRequired}
-                                />
+                            {nameInput}
                         </Row>
-                            <div className="error">{this.state.errorTitle}</div>
                         <Row>
                             <Col md="8">
-                                <DatePicker
-                                    selected={this.state.date}
-                                    onChange={this.handleDateChange}
-                                    dateFormat={"DD/MM/YYYY"}
-                                    placeholderText="Date"
-                                    todayButton={"Aujourd'hui"}
-                                    minDate={moment()}
-                                    className={this.state.datepickerStyle}
-                                />
+                                {dateInput}
                             </Col>
                             <Col md="4">
-                                    <select className={this.state.timeStyle} onClick={this.handleTimeChange} onChange={this.handleTimeChange} value={this.state.time}>
-                                        {this.state.hours}
-                                    </select>
+                                {timeInput}
                             </Col>
                         </Row>
                         <Row>
-                            <Col md="10">
-                                <Input
-                                    name="place"
-                                    label="Lieu"
-                                    value={this.state.place}
-                                    floatingLabel={true}
-                                    onChange={this.handlePlaceChange}
-                                    onClick={this.handlePlaceChange}
-                                    required={this.state.placeRequired}
-                                />
-                            </Col>
-                            <Col md="2">
-                                <div className="localisationLogo">
-                                    <img src={localisationLogo} alt="Localisation" style={{width:26}}/>
-                                </div>
-                            </Col>
-                        </Row>
-                            <div className="error">{this.state.errorPlace}</div>
-                        <Row>
-                            <Textarea
-                                name="description"
-                                label="Description"
-                                value={this.state.description}
-                                onChange={this.handleInputChange}
-                                floatingLabel={true}
-                            />
+                            {placeInput}
                         </Row>
                         <Row>
-                            <Textarea
-                                name="keyWords"
-                                label="Mots clé"
-                                value={this.state.keyWords}
-                                onChange={this.handleInputChange}
-                                floatingLabel={true}
-                            />
+                            {descriptionInput}
                         </Row>
                         <Row>
-                    <div className="error">{this.state.errorType}</div>
-                    <div className="success"  ref={(success) => { this.success = success; }}>{this.state.successMessage}</div>
+                            {ketWordsInput}
                         </Row>
                         <Row>
-                            <Button variant="flat" color="primary" onClick={this.onPressSendNewEvent}>Ajouter</Button>
+                            <div className="error errorForm">{this.state.errorType}</div>
+                            <div className="success" ref={(success) => {
+                                this.success = success;
+                            }}>{this.state.successMessage}</div>
+                        </Row>
+                        <Row>
+                            <Button
+                                variant="flat"
+                                color="primary"
+                                onClick={this.onPressSendNewEvent}
+                            >
+                                Ajouter
+                            </Button>
                         </Row>
                     </Container>
                 </div>

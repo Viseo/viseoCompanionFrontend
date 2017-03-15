@@ -1,3 +1,4 @@
+"use strict";
 require('babel-polyfill');
 require('isomorphic-fetch');
 
@@ -10,6 +11,7 @@ const win = doc.defaultView;
 global.document = doc;
 global.window = win;
 global.expect = chai.expect;
+global.__DEV__ = true;
 
 Object.keys(window).forEach((key) => {
     if(!(key in global)) {
