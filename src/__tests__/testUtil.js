@@ -28,6 +28,10 @@ function simulateTextInput(component, inputClassName, textValue){
     component.find('.' + inputClassName).simulate('change', { target: {value: textValue} });
 }
 
+function simulateDateInput(component, dateInputClassName, dateValue){
+    component.find('.' + dateInputClassName).simulate('change', dateValue);
+}
+
 function simulateClickOnButton(component, buttonClassName){
     component.find('.' + buttonClassName).simulate('click');
 }
@@ -41,8 +45,9 @@ const testUtil = {
     createAddEvent,
     checkIfClassExist,
     simulateTextInput,
+    simulateDateInput,
     checkDivContent,
-    simulateClickOnButton
+    simulateClickOnButton,
 };
 
 export default testUtil;

@@ -11,68 +11,31 @@ export default class Event {
         location,
         keyWords
     ) {
-
-        this._id = id;
         this._name = name;
         this._description = description;
         this._date = date;
         this._location = location;
         this._keyWords = keyWords;
     }
-    get id() {
-        return this._id;
-    }
-
-    set id(value) {
-        this._id = value;
-    }
 
     get name() {
         return this._name;
-    }
-
-    set name(value) {
-        this._name = value;
     }
 
     get description() {
         return this._description;
     }
 
-    set description(value) {
-        this._description = value;
-    }
-
     get date() {
         return this._date;
-    }
-
-    set date(value) {
-        this._date = value;
     }
 
     get location() {
         return this._location;
     }
 
-    set location(value) {
-        this._location = value;
-    }
 
     get keyWords() {
         return this._keyWords;
-    }
-
-    set keyWords(value) {
-        this._keyWords = value;
-    }
-
-    getTime() {
-        let hours = new Date(this.date).getHours();
-        let minutes = new Date(this.date).getMinutes();
-        if (minutes < 10) {
-            minutes = "0" + minutes;
-        }
-        return hours + "h" + minutes;
     }
 }

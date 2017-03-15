@@ -26,10 +26,10 @@ export default class AddEvent extends Component {
             hours: [],
             time: '',
             isTimeSet: '',
-            timeStyle: '',
+            timeStyle: 'select_notVisited',
             date: '',
             isDateSet: '',
-            datepickerStyle: '',
+            datepickerStyle: 'datepicker',
             datetime: '',
             keyWords: '',
             description: '',
@@ -82,17 +82,14 @@ export default class AddEvent extends Component {
 
     isFormCorrect = () => {
         let hasError = '';
-        if (!this.state.isDateSet) {
-            hasError = " une date correcte";
-        } else if (!this.state.isTimeSet) {
-            hasError = util.formatMessageWithSlash(hasError, " un horaire");
-        } else {
-            this.setState({
-                datetime: util.getDateTime(this.state.date, this.state.time)
-            })
-        }
         if (this.state.name === '' || this.state.errorName !== '') {
-            hasError = util.formatMessageWithSlash(hasError, " un nom correct");
+            hasError = " un nom correct";
+        }
+        if (!this.state.isDateSet) {
+            hasError = util.formatMessageWithSlash(hasError, " une date correcte");
+        }
+        if (!this.state.isTimeSet) {
+            hasError = util.formatMessageWithSlash(hasError, " un horaire");
         }
         if (this.state.location === '' || this.state.errorLocation !== '') {
             hasError = util.formatMessageWithSlash(hasError, " un lieu correct");
@@ -102,6 +99,9 @@ export default class AddEvent extends Component {
             this.setState({errorType: 'Veuillez entrer :' + hasError});
             return false;
         } else {
+            this.setState({
+                datetime: util.getDateTime(this.state.date, this.state.time)
+            });
             return true;
         }
     };
