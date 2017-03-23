@@ -11,6 +11,7 @@ import {
 import {shallow} from 'enzyme';
 
 import AddEvent from '../scenes/addEvent';
+import SignIn from '../scenes/signIn';
 
 function checkTitleContent(component, titleName, filedValue) {
     expect(component.find(titleName).text()).to.equal(filedValue);
@@ -40,6 +41,10 @@ function createAddEvent(){
     return shallow(<AddEvent />);
 }
 
+function createSignIn(){
+    return shallow(<SignIn />)
+}
+
 const testUtil = {
     checkTitleContent,
     createAddEvent,
@@ -48,6 +53,7 @@ const testUtil = {
     simulateDateInput,
     checkDivContent,
     simulateClickOnButton,
+    createSignIn
 };
 
 export default testUtil;

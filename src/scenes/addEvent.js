@@ -120,14 +120,16 @@ export default class AddEvent extends Component {
 
     handleNameChange = (event) => {
         let inputValue = event.target.value;
-        this.setState({
-            name: inputValue,
-            isNameRequired: true
-        });
+        if(inputValue.length <= 30){
+            this.setState({
+                name: inputValue,
+                isNameRequired: true
+            });
+        }
         let isNameValid = util.isNameValid(inputValue);
         if (isNameValid === -2) {
             this.setState({
-                errorName: 'Le nom doit contenir au moins deux caractères.'
+                errorName: 'Le nom doit contenir entre 2 et 30 caractères.'
             });
         } else if (!isNameValid) {
             this.setState({
@@ -203,18 +205,30 @@ export default class AddEvent extends Component {
     };
 
     renderNameInput() {
+        const limit = 30;
+        let remainder = limit - this.state.name.length;
+        let remainderColor = remainder > 5 ? 'blue' : 'red';
         return (
             <div>
-                <Input
-                    name="name"
-                    label="Nom de l'évènement"
-                    className="nameInput"
-                    value={this.state.name}
-                    floatingLabel={true}
-                    onChange={this.handleNameChange}
-                    onClick={this.handleNameChange}
-                    required={this.state.isNameRequired}
-                />
+                <Row>
+                    <Col md="11">
+                        <Input
+                            name="name"
+                            label="Nom de l'évènement"
+                            className="nameInput"
+                            value={this.state.name}
+                            floatingLabel={true}
+                            onChange={this.handleNameChange}
+                            onClick={this.handleNameChange}
+                            required={this.state.isNameRequired}
+                        />
+                    </Col>
+                    <Col md="1">
+                        <div className="remainingLetters" style={{color: remainderColor}}>
+                            {remainder}
+                        </div>
+                    </Col>
+                </Row>
                 <div className="error errorName">{this.state.errorName}</div>
             </div>
         );

@@ -187,6 +187,15 @@ option {
     padding: 0px;
     margin-top: 17px
 }
+.mui-col-md-11 {
+    padding: 0px;
+    width: 90%;
+}
+.mui-col-md-1 {
+    padding: 0px;
+    padding-top: 37px;
+    width: 10%;
+}
 
 textarea{
     color: red;

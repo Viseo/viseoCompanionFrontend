@@ -16,7 +16,7 @@ describe('In the Add event page the user', () => {
     });
     it('should not be able to type a name smaller then 2 letters', () => {
         testUtil.simulateTextInput(addEvent, 'nameInput', 'b');
-        testUtil.checkDivContent(addEvent, 'errorName', 'Le nom doit contenir au moins deux caractères.');
+        testUtil.checkDivContent(addEvent, 'errorName', 'Le nom doit contenir entre 2 et 30 caractères.');
     });
     it('should not be able to type a name with forbidden character', () => {
         testUtil.simulateTextInput(addEvent, 'nameInput', '%%%%');

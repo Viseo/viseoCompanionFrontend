@@ -20,6 +20,15 @@ export function isLocationValid(location) {
     }
 }
 
+export function hasEmptyElement() {
+    for(let i = 0; i < arguments.length; i++) {
+        if(!arguments[i] || arguments[i] === '')
+            return true;
+    }
+
+    return false;
+}
+
 export function getUnixTime(time) {
     return (time.split(":")[0] * 3600 + time.split(":")[1] * 60 + 3600) * 1000;
 
