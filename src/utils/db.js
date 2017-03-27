@@ -19,6 +19,7 @@ async function addEvent(event){
                 "description": event.description,
                 "keyWords": event.keyWords,
                 "place": event.location,
+                "category": event.category
             })
         });
         return (await response.status === 200);

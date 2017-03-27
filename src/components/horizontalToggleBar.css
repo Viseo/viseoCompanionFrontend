@@ -1,0 +1,20 @@
+
+.button {
+    font-size:12px;
+    font-weight:bold;
+    padding-left: 10%;
+    padding-right: 10%;
+    width: 99%;
+}
+
+.toggleItemCol {
+    width: 33%;
+    padding: 0%;
+    margin: 0%;
+}
+
+.bar {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+}
