@@ -113,7 +113,7 @@ export default class AddEvent extends Component {
                 this.emptyFields();
                 this.diplaySuccessMessage();
             } else {
-                alert("Erreur lors de l'envois au serveur.");
+                this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
             }
         }
     };

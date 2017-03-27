@@ -1,10 +1,12 @@
 /**
  * Created by LMA3606 on 15/03/2017.
  */
+
 import settings from '../config/settings';
 import User from './user';
 
 async function addEvent(event){
+    console.log(event.date);
     try {
         let response = await fetch(settings.api.addEvent, {
             method: 'POST',
@@ -19,8 +21,7 @@ async function addEvent(event){
                 "place": event.location,
             })
         });
-        response = await response.status;
-        return (parseInt(await response.status, 10) === 200);
+        return (await response.status === 200);
     } catch (error) {
         console.warn('db::addEvent ' + error);
     }

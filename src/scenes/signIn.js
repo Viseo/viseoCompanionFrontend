@@ -5,7 +5,6 @@
 import React, {Component} from 'react';
 import {Input, Button, Container, Row} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
 import db from '../utils/db';
-import * as util from '../utils/util';
 import { browserHistory } from 'react-router';
 
 
@@ -22,7 +21,7 @@ export default class SignIn extends Component {
 
     onPressSignIn = async () => {
         this.setState({errorMessage: ''});
-        if (util.hasEmptyElement(this.state.email, this.state.password)) {
+        if (!this.state.email || !this.state.password) {
             this.setState({errorMessage: "Veuillez remplir tous les champs."});
         } else {
             this.authenticateUser();
@@ -47,12 +46,15 @@ export default class SignIn extends Component {
         }
     };
 
-    handleInputChange = (event) => {
-        const stateName = event.target.name;
-        const stateValue = event.target.value;
-
+    handleEmailChange = (event) => {
         this.setState({
-            [stateName]: stateValue,
+            email: event.target.value,
+        });
+    };
+
+    handlePasswordChange = (event) => {
+        this.setState({
+            password: event.target.value,
         });
     };
 
@@ -64,13 +66,12 @@ export default class SignIn extends Component {
                     <Row>
                         <Input
                             name="email"
-                            label="email"
+                            label="Email"
                             className="emailInput"
                             type="email"
                             value={this.state.email}
                             floatingLabel={true}
-                            onChange={this.handleInputChange}
-                            onClick={this.handleInputChange}
+                            onChange={this.handleEmailChange}
                         />
                     </Row>
                     <Row>
@@ -81,8 +82,7 @@ export default class SignIn extends Component {
                             type="password"
                             value={this.state.password}
                             floatingLabel={true}
-                            onChange={this.handleInputChange}
-                            onClick={this.handleInputChange}
+                            onChange={this.handlePasswordChange}
                         />
                     </Row>
                     <Row>

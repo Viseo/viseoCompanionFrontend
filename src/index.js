@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import db from './utils/db';
 import AddEvent from './scenes/addEvent';
 import SignIn from './scenes/signIn';
 import App from './scenes/App';
@@ -10,7 +11,7 @@ ReactDOM.render(
     <Router history={browserHistory}>
         <Route path="/" component={App}>
             <IndexRoute component={SignIn}/>
-            <Route path="signIn" component={SignIn}/>
+            <Route path="signIn" component={SignIn} db={db}/>
             <Route path="add" component={AddEvent} />
         </Route>
     </Router>,
