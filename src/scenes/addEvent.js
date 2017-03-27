@@ -308,7 +308,9 @@ export default class AddEvent extends Component {
 
     renderCategoryInput() {
         let names = categories.eventCategories;
-        let colors = [categories.eventCategoriesColors[names[0]], categories.eventCategoriesColors[names[1]], categories.eventCategoriesColors[names[2]]];
+        let colors = [categories.eventCategoriesColors[names[0]],
+            categories.eventCategoriesColors[names[1]],
+            categories.eventCategoriesColors[names[2]]];
         return (
             <HorizontalToggleBar items={names} colors={colors} onCategorySelected={this.onCategorySelected}/>
         );

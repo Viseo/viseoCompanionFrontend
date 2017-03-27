@@ -8,7 +8,8 @@ import {Button} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
 export default class HorizontalToggleBar extends Component {
 
     static defaultProps = {
-        unselectedColor: 'grey'
+        unselectedColor: '#f2f2f2',
+        selectedTextColor: 'darkgrey'
     }
 
     constructor(props) {
@@ -38,7 +39,7 @@ export default class HorizontalToggleBar extends Component {
             <Button className="button" onClick={this.toggleItem}
                     style={{
                         backgroundColor: selected? this.props.color : this.props.unselectedColor,
-                        color: selected? this.props.unselectedColor : this.props.color
+                        color: selected? this.props.selectedTextColor : this.props.color
                     }}>
                 {this.props.item}
             </Button>
