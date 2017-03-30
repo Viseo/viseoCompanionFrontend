@@ -11,6 +11,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Event from '../utils/event';
 import db from '../utils/db';
 import * as util from '../utils/util';
+import HorizontalToggleBar from '../components/horizontalToggleBar';
+import categories from '../utils/eventCategories';
 import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
 
 export default class AddEvent extends Component {
@@ -33,7 +35,8 @@ export default class AddEvent extends Component {
             datetime: '',
             keyWords: '',
             description: '',
-            errorType: ''
+            errorType: '',
+            categoryId: ''
         };
         this.generateSelectHours();
     }
@@ -108,7 +111,13 @@ export default class AddEvent extends Component {
 
     onPressSendNewEvent = async () => {
         if (await this.isFormCorrect()) {
-            let newEvent = new Event(null, this.state.name, this.state.description, this.state.datetime, this.state.location, this.state.keyWords)
+            let newEvent = new Event(null,
+                this.state.name,
+                this.state.description,
+                this.state.datetime,
+                this.state.location,
+                this.state.keyWords,
+                this.state.categoryId)
             if (await db.addEvent(newEvent)) {
                 this.emptyFields();
                 this.diplaySuccessMessage();
@@ -297,6 +306,21 @@ export default class AddEvent extends Component {
         );
     }
 
+    renderCategoryInput() {
+        let names = categories.eventCategories;
+        let colors = [categories.eventCategoriesColors[names[0]],
+            categories.eventCategoriesColors[names[1]],
+            categories.eventCategoriesColors[names[2]]];
+        return (
+            <HorizontalToggleBar items={names} colors={colors} onCategorySelected={this.onCategorySelected}/>
+        );
+    }
+
+    onCategorySelected = (categoryName) => {
+        let categoryId = categories.eventCategories.indexOf(categoryName);
+        this.setState({categoryId: categoryId});
+    }
+
     renderKeyWordsInput() {
         return (
             <Textarea
@@ -316,6 +340,7 @@ export default class AddEvent extends Component {
         let timeInput = this.renderTimeInput();
         let locationInput = this.renderLocationInput();
         let descriptionInput = this.renderDescriptionInput();
+        let categoryInput = this.renderCategoryInput();
         let ketWordsInput = this.renderKeyWordsInput();
         return (
             <div className="new-event-form">
@@ -338,6 +363,9 @@ export default class AddEvent extends Component {
                         </Row>
                         <Row>
                             {descriptionInput}
+                        </Row>
+                        <Row style={{justifyContent: 'center', marginLeft: 0}}>
+                            {categoryInput}
                         </Row>
                         <Row>
                             {ketWordsInput}

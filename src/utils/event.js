@@ -9,13 +9,15 @@ export default class Event {
         description,
         date,
         location,
-        keyWords
+        keyWords,
+        category
     ) {
         this._name = name;
         this._description = description;
         this._date = date;
         this._location = location;
         this._keyWords = keyWords;
+        this._category = category;
     }
 
     get name() {
@@ -37,5 +39,9 @@ export default class Event {
 
     get keyWords() {
         return this._keyWords;
+    }
+
+    get category(){
+        return this._category;
     }
 }
