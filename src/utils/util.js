@@ -30,7 +30,7 @@ export function hasEmptyElement() {
 }
 
 export function getUnixTime(time) {
-    return (time.split(":")[0] * 3600 + time.split(":")[1] * 60 + 3600) * 1000;
+    return (time.split(":")[0] * 3600 + time.split(":")[1] * 60) * 1000;
 
 }
 
