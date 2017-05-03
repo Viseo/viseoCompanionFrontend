@@ -28,6 +28,29 @@ async function addEvent(event){
     }
 }
 
+async function EditEvent(event){
+    console.log(event.date);
+    try {
+        let response = await fetch(settings.api.editEvent+event.id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "name": event.name,
+                "datetime": event.date,
+                "description": event.description,
+                "keyWords": event.keyWords,
+                "place": event.location,
+                "category": event.category
+            })
+        });
+        return (await response.status === 200);
+    } catch (error) {
+        console.warn('db::editEvent ' + error);
+    }
+}
+
 async function authenticateAdmin(email, password) {
     try {
         let response = await fetch(settings.api.authenticate, {
@@ -55,6 +78,7 @@ async function authenticateAdmin(email, password) {
 
 const db = {
     addEvent,
+    EditEvent,
     authenticateAdmin
 };
 

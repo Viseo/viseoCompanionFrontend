@@ -10,7 +10,7 @@ export default class HorizontalToggleBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedCategory: ''
+            selectedCategory: this.props.selectedCategory
         };
     }
 
