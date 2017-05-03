@@ -10,7 +10,7 @@ import Calendar from "./scenes/Calendar";
 
 ReactDOM.render(
     <Router history={browserHistory}>
-        <Route path="/" component={App}>
+        <Route path="/Website/public/" component={App}>
             <IndexRoute component={Calendar}/>
             <Route path="calendar" component={Calendar}/>
             <Route path="signIn" component={SignIn} db={db}/>
