@@ -43,7 +43,7 @@ export default class Home extends Component {
         const eventLinks = this.state.events.map(event => {
             return (
                 <div>
-                    <a href={"/edit?id="+event.id}>{event.name}</a><br/>
+                    <a href={"/edit/"+event.id}>{event.name}</a><br/>
                 </div>
             )
         })

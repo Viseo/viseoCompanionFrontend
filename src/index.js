@@ -28,7 +28,7 @@ ReactDOM.render(
             <Route path="home" component={Home} db={db} />
             <Route path="signIn" component={SignIn} db={db}/>
             <Route path="add" component={AddEvent} />
-            <Route path="edit" component={EditEvent} event={event}/>
+            <Route path="edit/:id" component={EditEvent} event={event}/>
         </Route>
     </Router>,
     document.getElementById('root')

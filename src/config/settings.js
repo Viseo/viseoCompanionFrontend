@@ -13,6 +13,7 @@ let SERVER_API_URL = 'http://54.229.99.105:8080/viseocompanion/api/';
 
 const restRoutes = {
     addEvent: SERVER_API_URL + 'events',
+    getEvent: SERVER_API_URL + 'events/',
     editEvent: SERVER_API_URL + 'events/',
     getEvents: SERVER_API_URL + 'events/',
     authenticate: SERVER_API_URL + 'authenticate',

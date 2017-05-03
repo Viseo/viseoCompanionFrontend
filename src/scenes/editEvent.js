@@ -9,35 +9,52 @@ import db from '../utils/db';
 import * as util from '../utils/util';
 import HorizontalToggleBar from '../components/horizontalToggleBar';
 import categories from '../utils/eventCategories';
-import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
+import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react';
+import settings from "../config/settings"; //https://www.muicss.com/docs/v1/react
 
 export default class EditEvent extends Component {
     constructor(props) {
         super(props);
-        let {event} = this.props.route;
+
         this.state = {
-            id: event.id,
-            name: event.name,
+            id: this.props.params.id,
+            name: '',
             errorName: '',
             isNameRequired: true,
-            location: event.location,
+            location: '',
             errorLocation: '',
             isLocationRequired: false,
             hours: [],
-            time: event.time,
-            isTimeSet: true,
+            time: '',
+            isTimeSet: false,
             timeStyle: 'select_notVisited',
-            date: event.date,
-            isDateSet: true,
+            date: '',
+            isDateSet: false,
             datepickerStyle: 'datepicker',
             datetime: '',
-            keyWords: event.keyWords,
-            description: event.description,
+            keyWords: '',
+            description: '',
             errorType: '',
-            categoryId: event.categoryId
+            categoryId: ''
         };
         this.generateSelectHours();
+        this.loadEvent();
     }
+
+    loadEvent = async () => {
+        let eventsResponse = await fetch(settings.api.getEvent + this.state.id)
+        let event = await eventsResponse.json()
+
+        this.setState({
+            ...event,
+            categoryId: event.category,
+            date: moment.unix(event.datetime).format("YYYY/MM/dd"),
+                //moment.unix(event.datetime).format("DD/MM/YYYY"),
+            time: '13:30'
+            //moment.unix(event.datetime).format("hh:mm")
+        })
+    }
+
 
     emptyFields = () => {
         this.setState({
