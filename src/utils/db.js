@@ -27,6 +27,44 @@ async function addEvent(event){
     }
 }
 
+async function EditEvent(event){
+    try {
+        let response = await fetch(settings.api.editEvent+event.id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "name": event.name,
+                "datetime": event.date,
+                "description": event.description,
+                "keyWords": event.keyWords,
+                "place": event.location,
+                "category": event.category
+            })
+        });
+        return (await response.status === 200);
+    } catch (error) {
+        console.warn('db::editEvent ' + error);
+    }
+}
+
+async function deleteEvent(id){
+    console.log('db::deleteEvent : Demande de suppression de l event ' + id);
+
+    try {
+        let response = await fetch(settings.api.deleteEvent+id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return (await response.status === 200);
+    } catch (error) {
+        console.warn('db::deleteEvent ' + error);
+    }
+}
+
 async function authenticateAdmin(email, password) {
     try {
         let response = await fetch(settings.api.authenticate, {
@@ -54,6 +92,8 @@ async function authenticateAdmin(email, password) {
 
 const db = {
     addEvent,
+    deleteEvent,
+    EditEvent,
     authenticateAdmin
 };
 
