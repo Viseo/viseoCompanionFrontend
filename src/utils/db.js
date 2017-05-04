@@ -6,7 +6,6 @@ import settings from '../config/settings';
 import User from './user';
 
 async function addEvent(event){
-    console.log(event.date);
     try {
         let response = await fetch(settings.api.addEvent, {
             method: 'POST',

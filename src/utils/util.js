@@ -3,7 +3,7 @@
  */
 
 export function isNameValid(name) {
-    if(name.length < 2){
+    if(name.length < 2 && name.length > 31){
         return -2;
     } else {
         const regexTitle = /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ.\s\-,'?!"/+*#]*$/;

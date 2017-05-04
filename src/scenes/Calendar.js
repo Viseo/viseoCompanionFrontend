@@ -3,6 +3,8 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/less/styles.less';
 
+import { DefaultRoute, Link, Route, RouteHandler } from 'react-router';
+
 BigCalendar.setLocalizer(
     BigCalendar.momentLocalizer(moment)
 );
@@ -32,6 +34,7 @@ export default class extends Component {
         );
         return (
             <div>
+                <Link to="add">ADD</Link>
                 <p>
                     Calendar view
                 </p>

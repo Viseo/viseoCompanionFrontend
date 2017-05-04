@@ -51,7 +51,8 @@
     "webpack-dev-server": "^2.4.5"
   },
   "scripts": {
-    "start": "webpack-dev-server --hot --progress --colors",
+    "start": "react-scripts start",
+    "startWebpack": "webpack-dev-server --colors",
     "build": "react-scripts build",
     "newBuild": "webpack",
     "test": "mocha --compilers js:babel-core/register --opts mocha.opts src/**/*.spec.js",
