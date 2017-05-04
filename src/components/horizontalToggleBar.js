@@ -14,6 +14,12 @@ export default class HorizontalToggleBar extends Component {
         };
     }
 
+    componentWillReceiveProps({selectedCategory}) {
+        this.setState({
+            selectedCategory
+        })
+    }
+
     selectCategory = (itemName) => {
         this.setState({selectedCategory: itemName});
         this.props.onCategorySelected(itemName);

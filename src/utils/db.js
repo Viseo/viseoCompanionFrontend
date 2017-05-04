@@ -29,7 +29,6 @@ async function addEvent(event){
 }
 
 async function EditEvent(event){
-    console.log(event.date);
     try {
         let response = await fetch(settings.api.editEvent+event.id, {
             method: 'PUT',

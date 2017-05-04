@@ -35,23 +35,24 @@ export default class EditEvent extends Component {
             keyWords: '',
             description: '',
             errorType: '',
-            categoryId: ''
+            categoryId: 0,
+            participants:[]
         };
-        this.generateSelectHours();
         this.loadEvent();
+        this.generateSelectHours();
     }
 
     loadEvent = async () => {
         let eventsResponse = await fetch(settings.api.getEvent + this.state.id)
         let event = await eventsResponse.json()
-
         this.setState({
             ...event,
+            location: event.place,
             categoryId: event.category,
-            date: moment.unix(event.datetime).format("YYYY/MM/dd"),
-                //moment.unix(event.datetime).format("DD/MM/YYYY"),
-            time: '13:30'
-            //moment.unix(event.datetime).format("hh:mm")
+            date: moment(new Date(event.datetime)),
+            isDateSet: true,
+            time: moment(new Date(event.datetime)).format("hh:mm"),
+            isTimeSet: true,
         })
     }
 
@@ -84,10 +85,10 @@ export default class EditEvent extends Component {
         for (let i = startHour; i <= endHour; i++) {
 
             let hourString = i + ":00";
-            this.state.hours.push(<Option selected={this.state.time === hourString} value={hourString}
+            this.state.hours.push(<Option value={hourString}
                                           label={hourString} key={hourString}/>);
             hourString = i + ":30";
-            this.state.hours.push(<Option selected={this.state.time === hourString} value={hourString}
+            this.state.hours.push(<Option value={hourString}
                                           label={hourString} key={hourString}/>);
         }
     };
@@ -147,6 +148,9 @@ export default class EditEvent extends Component {
                 this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
             }
         }
+    };
+    onPressSendDeleteEvent = async () => {
+
     };
 
     handleNameChange = (event) => {
@@ -308,8 +312,9 @@ export default class EditEvent extends Component {
 
     renderTimeInput() {
         return (
-            <select className={this.state.timeStyle} onClick={this.handleTimeChange} onChange={this.handleTimeChange}
-                    value={this.state.time}>
+            <select className={this.state.timeStyle} value={this.state.time} onClick={this.handleTimeChange}
+                    onChange={this.handleTimeChange}
+            >
                 {this.state.hours}
             </select>
         );
@@ -330,12 +335,11 @@ export default class EditEvent extends Component {
 
     renderCategoryInput() {
         let names = categories.eventCategories;
-        let selectedCategory = names[this.state.categoryId];
         let colors = [categories.eventCategoriesColors[names[0]],
             categories.eventCategoriesColors[names[1]],
             categories.eventCategoriesColors[names[2]]];
         return (
-            <HorizontalToggleBar items={names} selectedCategory={selectedCategory} colors={colors}
+            <HorizontalToggleBar items={names} selectedCategory={names[this.state.categoryId]} colors={colors}
                                  onCategorySelected={this.onCategorySelected}/>
         );
     }
@@ -366,11 +370,18 @@ export default class EditEvent extends Component {
         let descriptionInput = this.renderDescriptionInput();
         let categoryInput = this.renderCategoryInput();
         let ketWordsInput = this.renderKeyWordsInput();
+        let participants=this.state.participants.map(participant=>{
+            return(
+                <Row key={participant.email}>
+                    {participant.email}
+                </Row>
+            )
+        })
         return (
             <div className="new-event-form">
                 <h1>Modifier Evènement</h1>
-                <div className="form">
-                    <Container>
+                <div className="form" style={{width:'100%'}}>
+                    <Container style={{display:'inline-block'}}>
                         <Row>
                             {nameInput}
                         </Row>
@@ -413,7 +424,21 @@ export default class EditEvent extends Component {
                             >
                                 Modifier
                             </Button>
+                            <Button
+                                variant="flat"
+                                color="danger"
+                                className="deleteButton"
+                                onClick={this.onPressSendDeleteEvent}
+                            >
+                                Supprimer
+                            </Button>
                         </Row>
+                    </Container>
+                    <Container style={{display:'inline-block', verticalAlign:'top',minWidth: '20%',minHeight:'100%',overflowY:'scroll', marginLeft:50,borderWidth:1,borderStyle:'solid',borderColor:'#000'}}>
+                        <Row>
+                            <h3>Participants</h3>
+                        </Row>
+                        {participants}
                     </Container>
                 </div>
             </div>
