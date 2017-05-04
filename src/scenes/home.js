@@ -3,6 +3,7 @@
  */
 import React, {Component} from 'react';
 import settings from "../config/settings";
+import {Button} from "muicss/react";
 
 export default class Home extends Component {
 
@@ -38,7 +39,9 @@ export default class Home extends Component {
         }
         return events
     }
-
+    addEvent = async () => {
+        this.props.history.push('/add');
+    };
     render() {
         const eventLinks = this.state.events.map(event => {
             return (
@@ -48,9 +51,17 @@ export default class Home extends Component {
             )
         })
         return (
+
             <div>
-                <p>Welcome to Home</p>
+                <h2>Liste des événements</h2>
+
                 {eventLinks}
+                <Button
+                style={{backgroundColor:'#2196F3',color:'white'}}
+                onClick={this.addEvent}
+            >
+                Ajouter
+            </Button>
             </div>
         )
     }

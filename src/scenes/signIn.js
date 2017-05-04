@@ -5,7 +5,6 @@
 import React, {Component} from 'react';
 import {Input, Button, Container, Row} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
 import db from '../utils/db';
-import { browserHistory } from 'react-router';
 
 
 export default class SignIn extends Component {
@@ -36,7 +35,7 @@ export default class SignIn extends Component {
             if (user === unabledToReachServerCode) {
                 this.setState({errorMessage: "Impossible de joindre le serveur, veuillez réessayer plus tard ou vérifiez votre connexion internet."});
             } else if (user) {
-                browserHistory.push('/add')
+                this.props.history.push('/home')
             } else {
                 this.setState({errorMessage: "Les informations fournies sont incorrectes."});
             }

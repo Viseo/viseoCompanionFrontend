@@ -50,6 +50,22 @@ async function EditEvent(event){
     }
 }
 
+async function deleteEvent(id){
+    console.log('db::deleteEvent : Demande de suppression de l event ' + id);
+
+    try {
+        let response = await fetch(settings.api.deleteEvent+id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return (await response.status === 200);
+    } catch (error) {
+        console.warn('db::deleteEvent ' + error);
+    }
+}
+
 async function authenticateAdmin(email, password) {
     try {
         let response = await fetch(settings.api.authenticate, {
@@ -77,6 +93,7 @@ async function authenticateAdmin(email, password) {
 
 const db = {
     addEvent,
+    deleteEvent,
     EditEvent,
     authenticateAdmin
 };

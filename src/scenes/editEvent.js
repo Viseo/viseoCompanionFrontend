@@ -10,14 +10,15 @@ import * as util from '../utils/util';
 import HorizontalToggleBar from '../components/horizontalToggleBar';
 import categories from '../utils/eventCategories';
 import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react';
-import settings from "../config/settings"; //https://www.muicss.com/docs/v1/react
+import settings from "../config/settings"; //https://www.muicss.com/docs/v1/react;
+import  Modal from "react-modal"
 
 export default class EditEvent extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            id: this.props.params.id,
+            id: this.props.match.params.id,
             name: '',
             errorName: '',
             isNameRequired: true,
@@ -36,7 +37,8 @@ export default class EditEvent extends Component {
             description: '',
             errorType: '',
             categoryId: 0,
-            participants:[]
+            participants: [],
+            modalVisible: false
         };
         this.loadEvent();
         this.generateSelectHours();
@@ -151,8 +153,18 @@ export default class EditEvent extends Component {
     };
     onPressSendDeleteEvent = async () => {
 
+        this.setState({modalVisible: true})
     };
 
+    OnConfirmDelete = async () => {
+        this.props.history.push('/home');
+        return
+        if (await db.deleteEvent(this.state.id)) {
+
+        } else {
+            this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
+        }
+    };
     handleNameChange = (event) => {
         let inputValue = event.target.value;
         if (inputValue.length <= 30) {
@@ -362,6 +374,43 @@ export default class EditEvent extends Component {
         );
     }
 
+    renderModal() {
+        return (
+                <Modal
+                    isOpen={this.state.modalVisible}
+                    closeTimeoutMS={20}
+                    style={modalStyle}
+                    contentLabel="Modal"
+                >
+                    <p>Etes-vous sûr(e) de vouloir supprimer?</p>
+                    <div>
+                        <div style={{display: 'inline-block'}}>
+                            <Button
+                                variant="flat"
+                                color="primary"
+                                onClick={() => {
+                                    this.setState({
+                                        modalVisible:false
+                                    })
+                                }}
+                            >
+                                Annuler
+                            </Button>
+                        </div>
+                        <div style={{display: 'inline-block'}}>
+                            <Button
+                                variant="flat"
+                                color="danger"
+                                onClick={this.OnConfirmDelete}
+                            >
+                                Confirmer
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+        )
+    }
+
     render() {
         let nameInput = this.renderNameInput();
         let dateInput = this.renderDateInput();
@@ -370,18 +419,21 @@ export default class EditEvent extends Component {
         let descriptionInput = this.renderDescriptionInput();
         let categoryInput = this.renderCategoryInput();
         let ketWordsInput = this.renderKeyWordsInput();
-        let participants=this.state.participants.map(participant=>{
-            return(
+        let participants = this.state.participants.map(participant => {
+            return (
                 <Row key={participant.email}>
                     {participant.email}
                 </Row>
             )
-        })
+        });
+        let modal = this.renderModal();
+
         return (
             <div className="new-event-form">
+                {modal}
                 <h1>Modifier Evènement</h1>
-                <div className="form" style={{width:'100%'}}>
-                    <Container style={{display:'inline-block'}}>
+                <div className="form" style={{width: '100%'}}>
+                    <Container style={{display: 'inline-block'}}>
                         <Row>
                             {nameInput}
                         </Row>
@@ -434,7 +486,17 @@ export default class EditEvent extends Component {
                             </Button>
                         </Row>
                     </Container>
-                    <Container style={{display:'inline-block', verticalAlign:'top',minWidth: '20%',minHeight:'100%',overflowY:'scroll', marginLeft:50,borderWidth:1,borderStyle:'solid',borderColor:'#000'}}>
+                    <Container style={{
+                        display: 'inline-block',
+                        verticalAlign: 'top',
+                        minWidth: '20%',
+                        minHeight: '100%',
+                        overflowY: 'scroll',
+                        marginLeft: 50,
+                        borderWidth: 1,
+                        borderStyle: 'solid',
+                        borderColor: '#000'
+                    }}>
                         <Row>
                             <h3>Participants</h3>
                         </Row>
@@ -443,5 +505,31 @@ export default class EditEvent extends Component {
                 </div>
             </div>
         );
+    }
+}
+
+const modalStyle = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.75)'
+    },
+    content: {
+        position: 'absolute',
+        top:'50%',
+        left:'50%',
+        right:'auto',
+        bottom:'auto',
+        marginRight:'-50%',
+        transform:'translate(-50%,-50%)',
+        border: '1px solid #ccc',
+        background: '#fff',
+        WebkitOverflowScrolling: 'touch',
+        borderRadius: '4px',
+        outline: 'none',
+        padding: '20px',
     }
 }

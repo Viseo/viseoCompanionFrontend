@@ -5,7 +5,7 @@ import AddEvent from './scenes/addEvent';
 import SignIn from './scenes/signIn';
 import App from './scenes/App';
 import './index.css';
-import { Router, Route, browserHistory, IndexRoute} from 'react-router';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import EditEvent from "./scenes/editEvent";
 import moment from "moment";
 import Home from "./scenes/home";
@@ -22,15 +22,8 @@ let event={
 
 }
 ReactDOM.render(
-    <Router history={browserHistory}>
-        <Route path="/" component={App}>
-            <IndexRoute  component={Home}  db={db} />
-            <Route path="home" component={Home} db={db} />
-            <Route path="signIn" component={SignIn} db={db}/>
-            <Route path="add" component={AddEvent} />
-            <Route path="edit/:id" component={EditEvent} event={event}/>
-        </Route>
-    </Router>,
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>,
     document.getElementById('root')
 );
-
