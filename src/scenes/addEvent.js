@@ -68,7 +68,14 @@ export default class AddEvent extends Component {
         this.state.hours.push(<Option value="0" label="Horaire" key="Horaire"/>);
         for (let i = startHour; i <= endHour; i++) {
             let hourString = i + ":00";
-            this.state.hours.push(<Option value={hourString} label={hourString} key={hourString}/>);
+            this.state.hours.push(
+                <Option
+                    selected={this.state.time === startHour}
+                    value={hourString}
+                    label={hourString}
+                    key={hourString}
+                />
+            );
             hourString = i + ":30";
             this.state.hours.push(<Option value={hourString} label={hourString} key={hourString}/>);
         }
@@ -273,12 +280,12 @@ export default class AddEvent extends Component {
     renderDateInput () {
         return (
             <DatePicker
-                selected={this.state.date}
+                selected={moment(new Date('YYYY', 'MM', 'DD'))}
                 onChange={this.handleDateChange}
                 dateFormat={"DD/MM/YYYY"}
                 placeholderText="Date"
                 todayButton={"Aujourd'hui"}
-                minDate={moment()}
+                minDate={"19/01/1993"}
                 className={this.state.datepickerStyle}
             />
         );
