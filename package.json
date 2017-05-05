@@ -41,6 +41,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "startWebpack": "webpack-dev-server --colors",
     "test": "mocha --compilers js:babel-core/register --opts mocha.opts src/**/*.spec.js",
     "Test+Coverage": "nyc -all -e .jsx npm test",
     "CoverageReport": "nyc report"
