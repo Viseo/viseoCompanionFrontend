@@ -31,9 +31,7 @@
   },
   "dependencies": {
     "babel-preset-es2016": "^6.24.1",
-    "exports-loader": "^0.6.4",
     "istanbul": "^0.4.5",
-    "lazy-route": "^1.0.7",
     "moment": "^2.17.1",
     "muicss": "^0.9.9-rc2",
     "react": "^15.4.2",
@@ -41,13 +39,13 @@
     "react-datepicker": "^0.41.1",
     "react-dom": "^15.4.2",
     "react-modal": "^1.7.7",
-    "react-router": "^4.1.1",
-    "react-router-dom": "^4.1.1"
+    "react-router-dom": "^4.1.1",
+    "webpack": "^2.5.1"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "startWebpack": "webpack",
+    "dev": "webpack -d --watch",
+    "build": "webpack",
     "test": "mocha --compilers js:babel-core/register --opts mocha.opts src/**/*.spec.js",
     "Test+Coverage": "nyc -all -e .jsx npm test",
     "CoverageReport": "nyc report"

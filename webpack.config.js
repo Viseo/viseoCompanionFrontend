@@ -10,7 +10,7 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                include: path.resolve('./src'),
+                include: APP_DIR,
                 loader: 'babel-loader',
                 query: require('./babelrc.js'),
             },
