@@ -40,8 +40,8 @@
     "react-dom": "^15.4.2",
     "react-modal": "^1.7.7",
     "react-router-dom": "^4.1.1",
-    "webpack": "^2.5.1",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "^2.4.5",
+    "webpack": "^2.5.1"
   },
   "scripts": {
     "start": "react-scripts start",
