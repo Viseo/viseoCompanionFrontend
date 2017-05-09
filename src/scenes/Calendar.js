@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import BigCalendar from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-import 'react-big-calendar/lib/less/styles.less';
 
-import { DefaultRoute, Link, Route, RouteHandler } from 'react-router';
+import {Link} from "react-router-dom";
 
 BigCalendar.setLocalizer(
     BigCalendar.momentLocalizer(moment)
