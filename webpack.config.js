@@ -30,4 +30,9 @@ module.exports = {
         ],
 
     },
+    devServer: {
+        contentBase: APP_DIR,
+        port: 3000,
+        historyApiFallback: true,
+    },
 };

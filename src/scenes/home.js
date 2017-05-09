@@ -21,36 +21,37 @@ export default class Home extends Component {
     }
 
     render() {
-        const eventLinks = this.state.events.map(event => {
-            return (
-                <div>
-                    <Link to={"/edit/" + event.id}>{event.name}</Link><br/>
-                </div>
-            )
-        })
-        const events = this.getEventsFormattedForCalendar()
-        const calendar = (
-            <div style={{height: 400}}>
-                <BigCalendar
-                    events={events}
-                    defaultDate={new Date()}
-                />
+        const calendar = this.renderCalendar()
+        const addEventButton = this.renderAddEventButton()
+        return (
+            <div>
+                <h2>Liste des événements</h2>
+                {addEventButton}
+                {calendar}
             </div>
         )
-        const addEventButton =
+    }
+
+    renderAddEventButton() {
+        return (
             <Button
                 style={{backgroundColor: '#2196F3', color: 'white'}}
                 onClick={this.addEvent}
             >
                 Ajouter
             </Button>
-        return (
+        )
+    }
 
-            <div>
-                <h2>Liste des événements</h2>
-                {addEventButton}
-                {eventLinks}
-                {calendar}
+    renderCalendar() {
+        const events = this.getEventsFormattedForCalendar()
+        return (
+            <div style={{height: 400}}>
+                <BigCalendar
+                    events={events}
+                    defaultDate={new Date()}
+                    onSelectEvent={this.editSelectedEvent}
+                />
             </div>
         )
     }
@@ -59,13 +60,18 @@ export default class Home extends Component {
         this.props.history.push('/add');
     }
 
+    editSelectedEvent = (event) => {
+        this.props.history.push('/edit/' + event.id)
+    }
+
     getEventsFormattedForCalendar() {
         return this.state.events.map(event => {
             return {
                 'title': event.name,
                 'allDay': true,
                 'start': moment(event.date).toDate(),
-                'end': moment(event.date).toDate()
+                'end': moment(event.date).toDate(),
+                id: event.id
             }
         })
     }

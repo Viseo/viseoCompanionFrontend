@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Header from '../components/header';
-import {Route, BrowserRouter as Router, Link} from "react-router-dom";
+import {Route, BrowserRouter as Router} from "react-router-dom";
 import EditEvent from "./editEvent";
 import AddEvent from "./addEvent";
 import SignIn from "./signIn";
@@ -12,9 +12,8 @@ class App extends Component {
         return (
             <div className="App">
                 <Header/>
-                <Router>
+                <Router  history={Router.hashHistory}>
                     <div>
-                        <Link to="/">Home</Link>
                         <Route exact path="/" component={Home}/>
                         <Route path="/signIn" component={SignIn} db={db}/>
                         <Route path="/home" component={Home}/>

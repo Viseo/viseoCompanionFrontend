@@ -45,6 +45,7 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "webpack -d --watch",
+    "devServer": "webpack-dev-server --content-base build/",
     "build": "webpack",
     "test": "mocha --compilers js:babel-core/register --opts mocha.opts src/**/*.spec.js",
     "Test+Coverage": "nyc -all -e .jsx npm test",
