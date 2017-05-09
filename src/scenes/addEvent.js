@@ -29,7 +29,7 @@ export default class AddEvent extends Component {
             time: '',
             isTimeSet: '',
             timeStyle: 'select_notVisited',
-            date: '',
+            date: this.getDateFromCalendar(),
             isDateSet: '',
             datepickerStyle: 'datepicker',
             datetime: '',
@@ -39,6 +39,12 @@ export default class AddEvent extends Component {
             categoryId: ''
         };
         this.generateSelectHours();
+    }
+
+    getDateFromCalendar() {
+        return this.props.location.state.date ?
+            moment(this.props.location.state.date) :
+            moment()
     }
 
     emptyFields = () => {
@@ -67,17 +73,13 @@ export default class AddEvent extends Component {
 
         this.state.hours.push(<Option value="0" label="Horaire" key="Horaire"/>);
         for (let i = startHour; i <= endHour; i++) {
+
             let hourString = i + ":00";
-            this.state.hours.push(
-                <Option
-                    selected={this.state.time === startHour}
-                    value={hourString}
-                    label={hourString}
-                    key={hourString}
-                />
-            );
+            this.state.hours.push(<Option value={hourString}
+                                          label={hourString} key={hourString}/>);
             hourString = i + ":30";
-            this.state.hours.push(<Option value={hourString} label={hourString} key={hourString}/>);
+            this.state.hours.push(<Option value={hourString}
+                                          label={hourString} key={hourString}/>);
         }
     };
 
@@ -136,7 +138,7 @@ export default class AddEvent extends Component {
 
     handleNameChange = (event) => {
         let inputValue = event.target.value;
-        if(inputValue.length <= 30){
+        if (inputValue.length <= 30) {
             this.setState({
                 name: inputValue,
                 isNameRequired: true
@@ -192,13 +194,13 @@ export default class AddEvent extends Component {
     handleDateChange = (date) => {
         if (date) {
             this.setState({
-                datepickerStyle:'datepicker',
+                datepickerStyle: 'datepicker',
                 date,
                 isDateSet: true,
             });
         } else {
             this.setState({
-                datepickerStyle:'datepicker_empty',
+                datepickerStyle: 'datepicker_empty',
                 isDateSet: false,
             })
         }
@@ -277,10 +279,10 @@ export default class AddEvent extends Component {
         );
     }
 
-    renderDateInput () {
+    renderDateInput() {
         return (
             <DatePicker
-                selected={moment(new Date('YYYY', 'MM', 'DD'))}
+                selected={moment(this.state.date)}
                 onChange={this.handleDateChange}
                 dateFormat={"DD/MM/YYYY"}
                 placeholderText="Date"
@@ -384,7 +386,8 @@ export default class AddEvent extends Component {
                                 ref={(success) => {
                                     this.success = success;
                                 }}
-                            >Evènement ajouté !</div>
+                            >Evènement ajouté !
+                            </div>
                         </Row>
                         <Row>
                             <Button

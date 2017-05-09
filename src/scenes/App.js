@@ -12,7 +12,7 @@ class App extends Component {
         return (
             <div className="App">
                 <Header/>
-                <Router  history={Router.hashHistory}>
+                <Router>
                     <div>
                         <Route exact path="/" component={Home}/>
                         <Route path="/signIn" component={SignIn} db={db}/>

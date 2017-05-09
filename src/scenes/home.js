@@ -64,8 +64,7 @@ export default class Home extends Component {
 
     createEventOnSelectedSlot = (slotInfo) => {
         let newEvent = {
-            name: 'Nouvel évènement',
-            date: moment(slotInfo.start),
+            date: slotInfo.start,
         }
         this.props.history.push('/add', newEvent)
     }
