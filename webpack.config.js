@@ -1,9 +1,11 @@
 const path = require('path');
 const APP_DIR = path.resolve(__dirname, 'src');
+const BUILD_DIR = path.resolve(__dirname, 'build');
 
 module.exports = {
     entry: path.resolve('./src/index.js'),
     output: {
+        path: BUILD_DIR,
         filename: 'bundle.js',
     },
     module: {
