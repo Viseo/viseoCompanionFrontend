@@ -30,7 +30,7 @@ export default class AddEvent extends Component {
             isTimeSet: '',
             timeStyle: 'select_notVisited',
             date: this.getDateFromCalendar(),
-            isDateSet: '',
+            isDateSet: true,
             datepickerStyle: 'datepicker',
             datetime: '',
             keyWords: '',
@@ -42,8 +42,9 @@ export default class AddEvent extends Component {
     }
 
     getDateFromCalendar() {
-        return this.props.location.state.date ?
-            moment(this.props.location.state.date) :
+        let datePickedFromCalendar = this.props.location.state ? this.props.location.state.date : null
+        return datePickedFromCalendar ?
+            moment(datePickedFromCalendar) :
             moment()
     }
 
@@ -130,6 +131,7 @@ export default class AddEvent extends Component {
             if (await db.addEvent(newEvent)) {
                 this.emptyFields();
                 this.diplaySuccessMessage();
+                this.props.history.push('/home');
             } else {
                 this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
             }
