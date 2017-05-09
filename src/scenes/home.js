@@ -37,19 +37,20 @@ export default class Home extends Component {
                 />
             </div>
         )
+        const addEventButton =
+            <Button
+                style={{backgroundColor: '#2196F3', color: 'white'}}
+                onClick={this.addEvent}
+            >
+                Ajouter
+            </Button>
         return (
 
             <div>
                 <h2>Liste des événements</h2>
-
+                {addEventButton}
                 {eventLinks}
                 {calendar}
-                <Button
-                    style={{backgroundColor: '#2196F3', color: 'white'}}
-                    onClick={this.addEvent}
-                >
-                    Ajouter
-                </Button>
             </div>
         )
     }
