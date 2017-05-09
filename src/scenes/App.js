@@ -6,7 +6,6 @@ import AddEvent from "./addEvent";
 import SignIn from "./signIn";
 import db from "../utils/db";
 import Home from "./home";
-import Calendar from "./Calendar";
 
 class App extends Component {
     render() {
@@ -16,7 +15,7 @@ class App extends Component {
                 <Router>
                     <div>
                         <Link to="/">Home</Link>
-                        <Route exact path="/" component={Calendar}/>
+                        <Route exact path="/" component={Home}/>
                         <Route path="/signIn" component={SignIn} db={db}/>
                         <Route path="/home" component={Home}/>
                         <Route path="/add" component={AddEvent}/>
