@@ -151,6 +151,7 @@ export default class EditEvent extends Component {
             }
         }
     };
+
     onPressSendDeleteEvent = async () => {
 
         this.setState({modalVisible: true})

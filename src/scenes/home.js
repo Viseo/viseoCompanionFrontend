@@ -48,9 +48,11 @@ export default class Home extends Component {
         return (
             <div style={{height: 400}}>
                 <BigCalendar
+                    selectable
                     events={events}
                     defaultDate={new Date()}
                     onSelectEvent={this.editSelectedEvent}
+                    onSelectSlot={this.createEventOnSelectedSlot}
                 />
             </div>
         )
@@ -58,6 +60,14 @@ export default class Home extends Component {
 
     addEvent = async () => {
         this.props.history.push('/add');
+    }
+
+    createEventOnSelectedSlot = (slotInfo) => {
+        let newEvent = {
+            name: 'Nouvel évènement',
+            date: moment(slotInfo.start),
+        }
+        this.props.history.push('/add', newEvent)
     }
 
     editSelectedEvent = (event) => {
@@ -68,9 +78,8 @@ export default class Home extends Component {
         return this.state.events.map(event => {
             return {
                 'title': event.name,
-                'allDay': true,
                 'start': moment(event.date).toDate(),
-                'end': moment(event.date).toDate(),
+                'end': moment(event.date).add(2, 'hour').toDate(),
                 id: event.id
             }
         })
