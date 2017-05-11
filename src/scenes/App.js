@@ -6,6 +6,7 @@ import AddEvent from "./addEvent";
 import SignIn from "./signIn";
 import db from "../utils/db";
 import Home from "./home";
+import ResetPassword from "./ResetPassword";
 
 class App extends Component {
     render() {
@@ -19,6 +20,7 @@ class App extends Component {
                         <Route path="/home" component={Home}/>
                         <Route path="/add" component={AddEvent}/>
                         <Route path="/edit/:id" component={EditEvent} event={event}/>
+                        <Route path="/resetPassword" component={ResetPassword}/>
                     </div>
                 </Router>
             </div>
