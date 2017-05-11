@@ -84,7 +84,7 @@ export default class AddEvent extends Component {
         }
     };
 
-    diplaySuccessMessage = () => {
+    displaySuccessMessage = () => {
         this.success.style.transition = 'initial';
         this.success.style.opacity = 100;
         setTimeout(() => {
@@ -130,7 +130,7 @@ export default class AddEvent extends Component {
                 this.state.categoryId)
             if (await db.addEvent(newEvent)) {
                 this.emptyFields();
-                this.diplaySuccessMessage();
+                this.displaySuccessMessage();
                 this.props.history.push('/home');
             } else {
                 this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});

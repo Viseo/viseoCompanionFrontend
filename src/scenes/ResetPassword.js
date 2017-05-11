@@ -11,7 +11,7 @@ export default class ResetPassword extends Component {
             passwordError: '',
             passwordCheck: '',
             passwordCheckError: '',
-            submitError:''
+            submitError: ''
         }
     }
 
@@ -20,15 +20,16 @@ export default class ResetPassword extends Component {
         const passwordInput = this.renderPasswordInput()
         const passwordCheckInput = this.renderPasswordCheckInput()
         const submitButton = this.renderSubmitButton()
+        const passwordWasChangedMessage = this.renderPasswordWasChangedMessage()
         return (
             <div>
-                <p>Reset ton pass bro!</p>
-                <p>{id + '  ' + token}</p>
+                <h1>Réinitialisation de mot de passe</h1>
 
                 <div style={{margin: 'auto', width: 300}}>
                     {passwordInput}
                     {passwordCheckInput}
                     {submitButton}
+                    {passwordWasChangedMessage}
                 </div>
             </div>
         )
@@ -88,7 +89,20 @@ export default class ResetPassword extends Component {
         )
     }
 
-    changePassword = async(id, password, token) => {
+    renderPasswordWasChangedMessage() {
+        return (
+            <div
+                className="success"
+                ref={(success) => {
+                    this.success = success;
+                }}
+            >
+                Mot de passe changé avec succès!
+            </div>
+        )
+    }
+
+    changePassword = async (id, password, token) => {
         try {
             let response = await fetch(settings.api.changePassword, {
                 method: 'POST',
@@ -96,15 +110,25 @@ export default class ResetPassword extends Component {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    userId : id,
+                    uzerId: id,
                     password,
-                    token
+                    tokenGuid: token
                 })
             });
-            return (await response.status === 200);
+            let didChangePassword = await response.json()
+            return didChangePassword
         } catch (error) {
-            console.warn('ResetPassword::changePassword ' + error);
+            console.warn('ResetPassword::changePassword ' + error)
         }
+    }
+
+    displaySuccessMessage = () => {
+        this.success.style.transition = 'initial';
+        this.success.style.opacity = 100;
+        setTimeout(() => {
+            this.success.style.transition = 'opacity 5s ease-in';
+            this.success.style.opacity = 0;
+        }, 10);
     }
 
     doPasswordsMatch(password, passwordCheck) {
@@ -147,7 +171,7 @@ export default class ResetPassword extends Component {
         let passwordCheck = event.target.value
         let passwordCheckError = this.doPasswordsMatch(password, passwordCheck) ?
             '' :
-            'Les deux mots de passe ne correspondent pas'
+            "Vous n'avez pas saisi le même mot de passe"
         this.setState({
             passwordCheck,
             passwordCheckError
@@ -156,14 +180,30 @@ export default class ResetPassword extends Component {
 
     onSubmitChangePassword = async () => {
         let {password, passwordCheck} = this.state
-        if(this.isPasswordValid(password)
+        if (this.isPasswordValid(password)
             && this.doPasswordsMatch(password, passwordCheck)) {
             const {id, token} = this.getUrlParams()
-            console.log(await this.changePassword(id, password, token));
+            let didChangePassword = await this.changePassword(id, password, token)
+            if (!didChangePassword) {
+                this.setState({
+                    submitError: "Le lien utilisé n'est plus valide"
+                })
+            } else {
+                this.displaySuccessMessage()
+                this.emptyField()
+            }
         } else {
             this.setState({
                 submitError: 'Les champs ne sont pas correctement remplis'
             })
         }
+    }
+
+    emptyField() {
+        this.setState({
+            password: '',
+            passwordCheck: '',
+            submitError: ''
+        })
     }
 }
