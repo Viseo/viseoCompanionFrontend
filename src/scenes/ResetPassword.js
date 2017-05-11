@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Button, Input} from "muicss/react";
+import settings from "../config/settings";
 
 export default class ResetPassword extends Component {
 
@@ -87,6 +88,25 @@ export default class ResetPassword extends Component {
         )
     }
 
+    changePassword = async(id, password, token) => {
+        try {
+            let response = await fetch(settings.api.addEvent, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id,
+                    password,
+                    token
+                })
+            });
+            return (await response.status === 200);
+        } catch (error) {
+            console.warn('ResetPassword::changePassword ' + error);
+        }
+    }
+
     doPasswordsMatch(password, passwordCheck) {
         return password === passwordCheck
     }
@@ -134,11 +154,12 @@ export default class ResetPassword extends Component {
         })
     }
 
-    onSubmitChangePassword = () => {
+    onSubmitChangePassword = async () => {
         let {password, passwordCheck} = this.state
         if(this.isPasswordValid(password)
-            && this.doPasswordsMatch(passwordCheck)) {
-
+            && this.doPasswordsMatch(password, passwordCheck)) {
+            const {id, token} = this.getUrlParams()
+            await this.changePassword(id, password, token)
         } else {
             this.setState({
                 submitError: 'Les champs ne sont pas correctement remplis'
