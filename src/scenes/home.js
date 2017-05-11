@@ -46,7 +46,7 @@ export default class Home extends Component {
     renderCalendar() {
         const events = this.getEventsFormattedForCalendar()
         return (
-            <div style={{height: "75vh"}}>
+            <div style={{height: "75vh", marginHorizontal:100}}>
                 <BigCalendar
                     selectable
                     events={events}

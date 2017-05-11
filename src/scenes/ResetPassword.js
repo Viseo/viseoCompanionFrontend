@@ -90,13 +90,13 @@ export default class ResetPassword extends Component {
 
     changePassword = async(id, password, token) => {
         try {
-            let response = await fetch(settings.api.addEvent, {
+            let response = await fetch(settings.api.changePassword, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id,
+                    userId : id,
                     password,
                     token
                 })
@@ -159,7 +159,7 @@ export default class ResetPassword extends Component {
         if(this.isPasswordValid(password)
             && this.doPasswordsMatch(password, passwordCheck)) {
             const {id, token} = this.getUrlParams()
-            await this.changePassword(id, password, token)
+            console.log(await this.changePassword(id, password, token));
         } else {
             this.setState({
                 submitError: 'Les champs ne sont pas correctement remplis'
