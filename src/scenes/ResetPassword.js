@@ -11,7 +11,8 @@ export default class ResetPassword extends Component {
             passwordError: '',
             passwordCheck: '',
             passwordCheckError: '',
-            submitError: ''
+            submitError: '',
+            isChanged: true,
         }
     }
 
@@ -24,13 +25,16 @@ export default class ResetPassword extends Component {
         return (
             <div>
                 <h1>Réinitialisation de mot de passe</h1>
-
-                <div style={{margin: 'auto', width: 300}}>
-                    {passwordInput}
-                    {passwordCheckInput}
-                    {submitButton}
-                    {passwordWasChangedMessage}
-                </div>
+                {this.state.isChanged ?
+                    <div style={{margin: 'auto', width: 300}}>
+                        {passwordWasChangedMessage}
+                    </div> :
+                    <div style={{margin: 'auto', width: 300}}>
+                        {passwordInput}
+                        {passwordCheckInput}
+                        {submitButton}
+                    </div>
+                }
             </div>
         )
     }
@@ -93,9 +97,6 @@ export default class ResetPassword extends Component {
         return (
             <div
                 className="success"
-                ref={(success) => {
-                    this.success = success;
-                }}
             >
                 Mot de passe changé avec succès!
             </div>
@@ -120,15 +121,6 @@ export default class ResetPassword extends Component {
         } catch (error) {
             console.warn('ResetPassword::changePassword ' + error)
         }
-    }
-
-    displaySuccessMessage = () => {
-        this.success.style.transition = 'initial';
-        this.success.style.opacity = 100;
-        setTimeout(() => {
-            this.success.style.transition = 'opacity 5s ease-in';
-            this.success.style.opacity = 0;
-        }, 10);
     }
 
     doPasswordsMatch(password, passwordCheck) {
@@ -189,21 +181,14 @@ export default class ResetPassword extends Component {
                     submitError: "Le lien utilisé n'est plus valide"
                 })
             } else {
-                this.displaySuccessMessage()
-                this.emptyField()
+                this.setState({
+                    isChanged: true
+                })
             }
         } else {
             this.setState({
                 submitError: 'Les champs ne sont pas correctement remplis'
             })
         }
-    }
-
-    emptyField() {
-        this.setState({
-            password: '',
-            passwordCheck: '',
-            submitError: ''
-        })
     }
 }

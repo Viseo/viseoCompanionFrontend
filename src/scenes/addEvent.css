@@ -50,9 +50,7 @@ h2 small {
     background: rgba(47, 255, 30, 0.11);
     color: #1f5618;
     border-radius: 10px;
-    font-size: 15px;
-    opacity: 0;
-    transition: opacity 5s ease-in;
+    font-size: 18px;
 }
 
 .datepicker {
