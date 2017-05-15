@@ -9,6 +9,8 @@ import Home from "./home";
 import ResetPassword from "./ResetPassword";
 
 class App extends Component {
+    //TODO: first page should be the signIn form
+    //TODO: Add the private route handler
     render() {
         return (
             <div className="App">
