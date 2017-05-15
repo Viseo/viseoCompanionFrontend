@@ -12,7 +12,7 @@ export default class ResetPassword extends Component {
             passwordCheck: '',
             passwordCheckError: '',
             submitError: '',
-            isChanged: true,
+            isChanged: false,
         }
     }
 
@@ -97,6 +97,13 @@ export default class ResetPassword extends Component {
         return (
             <div
                 className="success"
+                style={{
+                    marginBottom: 8,
+                    background: 'rgba(47, 255, 30, 0.11)',
+                    color: '#1f5618=',
+                    borderRadius: 10,
+                    fontSize: 18
+                }}
             >
                 Mot de passe changé avec succès!
             </div>

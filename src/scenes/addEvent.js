@@ -45,7 +45,7 @@ export default class AddEvent extends Component {
         let datePickedFromCalendar = this.props.location.state ? this.props.location.state.date : null
         return datePickedFromCalendar ?
             moment(datePickedFromCalendar) :
-            moment()
+            null
     }
 
     emptyFields = () => {
@@ -282,9 +282,12 @@ export default class AddEvent extends Component {
     }
 
     renderDateInput() {
+        const prefilledDate = this.state.date ?
+            moment(this.state.date) :
+            '';
         return (
             <DatePicker
-                selected={moment(this.state.date)}
+                selected={prefilledDate}
                 onChange={this.handleDateChange}
                 dateFormat={"DD/MM/YYYY"}
                 placeholderText="Date"

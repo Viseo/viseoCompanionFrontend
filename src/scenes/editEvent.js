@@ -47,15 +47,18 @@ export default class EditEvent extends Component {
     loadEvent = async () => {
         let eventsResponse = await fetch(settings.api.getEvent + this.state.id)
         let event = await eventsResponse.json()
+        this.offset = 2;
+        let datetime = moment(event.datetime);
         this.setState({
             ...event,
             location: event.place,
             categoryId: event.category,
-            date: moment(new Date(event.datetime)),
+            date: datetime,
             isDateSet: true,
-            time: moment(new Date(event.datetime)).format("hh:mm"),
+            time: datetime.format("HH:mm"),
             isTimeSet: true,
         })
+        console.log('time on load: ' + datetime.format("HH:mm"));
     }
 
 
@@ -122,30 +125,38 @@ export default class EditEvent extends Component {
         if (hasError !== '') {
             this.setState({errorType: 'Veuillez entrer :' + hasError});
             return false;
-        } else {
-            this.setState({
-                datetime: util.getDateTime(this.state.date, this.state.time)
-            });
-            return true;
         }
+        return true;
     };
+
+    getFormattedDatetime = () => {
+        let {date, time} = this.state;
+        let hours = Math.round(parseInt(time.split(":")[0]));
+        let minutes = Math.round(parseInt(time.split(":")[1]));
+        return moment(date)
+            .set('hour', hours)
+            .add(this.offset, 'h')
+            .set('minute', minutes)
+            .toDate()
+            .getTime();
+    }
 
     onPressSendEditEvent = async () => {
         if (await this.isFormCorrect()) {
             let {state} = this;
+            let datetime = this.getFormattedDatetime();
             let newEvent = {
                 id: state.id,
                 name: state.name,
                 description: state.description,
-                datetime: state.datetime,
+                datetime,
                 location: state.location,
                 keyWords: state.keyWords,
                 category: state.categoryId
 
             }
             if (await db.EditEvent(newEvent)) {
-                this.emptyFields();
-                this.diplaySuccessMessage();
+                this.props.history.push('/home');
             } else {
                 this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
             }
@@ -157,6 +168,7 @@ export default class EditEvent extends Component {
         this.setState({modalVisible: true})
     };
 
+    //TODO: fix and test this
     OnConfirmDelete = async () => {
         this.props.history.push('/home');
         return
@@ -420,6 +432,7 @@ export default class EditEvent extends Component {
         let descriptionInput = this.renderDescriptionInput();
         let categoryInput = this.renderCategoryInput();
         let ketWordsInput = this.renderKeyWordsInput();
+        //TODO: repair the list of participant
         let participants = this.state.participants.map(participant => {
             return (
                 <Row key={participant.email}>

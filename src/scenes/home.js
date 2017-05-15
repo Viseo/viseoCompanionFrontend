@@ -101,6 +101,7 @@ export default class Home extends Component {
     }
 
     loadEvents = async () => {
+        //TODO: retrieve the future and *past* event
         let eventsResponse = await fetch(settings.api.getEvents)
         let eventsJson = await eventsResponse.json()
         let events = this.getEventsFromJson(eventsJson)

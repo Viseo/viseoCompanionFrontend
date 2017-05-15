@@ -30,8 +30,10 @@ export function hasEmptyElement() {
 }
 
 export function getUnixTime(time) {
-    return (time.split(":")[0] * 3600 + time.split(":")[1] * 60) * 1000;
-
+    let hours = parseInt(time.split(":")[0]);
+    let offset = 2;
+    let minutes = parseInt(time.split(":")[1]);
+    return ((hours + offset)* 3600 + minutes * 60) * 1000;
 }
 
 export function getDateTime(date, time) {

@@ -7,7 +7,7 @@ import User from './user';
 
 async function addEvent(event){
     try {
-        let response = await fetch(settings.api.addEvent, {
+        let response = await fetch(settings.api.addEvent + '?host=1', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,14 +29,15 @@ async function addEvent(event){
 
 async function EditEvent(event){
     try {
-        let response = await fetch(settings.api.editEvent+event.id, {
+        let response = await fetch(settings.api.editEvent, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                "id": event.id,
                 "name": event.name,
-                "datetime": event.date,
+                "datetime": event.datetime,
                 "description": event.description,
                 "keyWords": event.keyWords,
                 "place": event.location,

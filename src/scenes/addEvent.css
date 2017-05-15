@@ -51,6 +51,8 @@ h2 small {
     color: #1f5618;
     border-radius: 10px;
     font-size: 18px;
+    opacity: 0;
+    transition: opacity 5s ease-in;
 }
 
 .datepicker {
