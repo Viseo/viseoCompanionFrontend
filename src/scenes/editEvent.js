@@ -58,7 +58,6 @@ export default class EditEvent extends Component {
             time: datetime.format("HH:mm"),
             isTimeSet: true,
         })
-        console.log('time on load: ' + datetime.format("HH:mm"));
     }
 
 
@@ -171,7 +170,6 @@ export default class EditEvent extends Component {
     //TODO: fix and test this
     OnConfirmDelete = async () => {
         this.props.history.push('/home');
-        return
         if (await db.deleteEvent(this.state.id)) {
 
         } else {
@@ -432,11 +430,10 @@ export default class EditEvent extends Component {
         let descriptionInput = this.renderDescriptionInput();
         let categoryInput = this.renderCategoryInput();
         let ketWordsInput = this.renderKeyWordsInput();
-        //TODO: repair the list of participant
         let participants = this.state.participants.map(participant => {
             return (
-                <Row key={participant.email}>
-                    {participant.email}
+                <Row key={participant.id}>
+                    {participant.firstName} {participant.lastName}
                 </Row>
             )
         });

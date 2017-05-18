@@ -5,7 +5,7 @@
 import settings from '../config/settings';
 import User from './user';
 
-async function addEvent(event){
+async function addEvent(event) {
     try {
         let response = await fetch(settings.api.addEvent + '?host=1', {
             method: 'POST',
@@ -27,7 +27,7 @@ async function addEvent(event){
     }
 }
 
-async function EditEvent(event){
+async function EditEvent(event) {
     try {
         let response = await fetch(settings.api.editEvent, {
             method: 'PUT',
@@ -50,11 +50,9 @@ async function EditEvent(event){
     }
 }
 
-async function deleteEvent(id){
-    console.log('db::deleteEvent : Demande de suppression de l event ' + id);
-
+async function deleteEvent(id) {
     try {
-        let response = await fetch(settings.api.deleteEvent+id, {
+        let response = await fetch(settings.api.deleteEvent(id), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
