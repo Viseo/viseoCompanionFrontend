@@ -14,7 +14,6 @@ module.exports = {
                 test: /\.js$/,
                 include: APP_DIR,
                 loader: 'babel-loader',
-                query: require('./babelrc.js'),
             },
             {
                 test: /\.css$/,

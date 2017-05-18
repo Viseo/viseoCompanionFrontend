@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "babel-cli": "^6.24.1",
     "babel-jest": "18.0.0",
     "babel-loader": "^6.4.0",
     "babel-plugin-istanbul": "^4.0.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
-    "babel-preset-react": "^6.23.0",
-    "babel-preset-stage-0": "^6.22.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "chai": "^3.5.0",
     "chai-enzyme": "^0.6.1",
     "css-loader": "^0.28.1",
@@ -27,21 +28,24 @@
     "react-scripts": "^0.9.5",
     "react-test-renderer": "~15.4.0",
     "sinon": "^2.0.0-pre.6",
-    "style-loader": "^0.17.0"
+    "style-loader": "^0.17.0",
+    "url-loader": "^0.5.8"
   },
   "dependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
     "babel-preset-es2016": "^6.24.1",
     "istanbul": "^0.4.5",
-    "moment": "^2.17.1",
-    "muicss": "^0.9.9-rc2",
-    "react": "^15.4.2",
+    "moment": "^2.18.1",
+    "muicss": "^0.9.16",
+    "react": "^15.5.4",
     "react-big-calendar": "^0.14.0",
     "react-datepicker": "^0.41.1",
-    "react-dom": "^15.4.2",
+    "react-dom": "^15.5.4",
     "react-modal": "^1.7.7",
     "react-router-dom": "^4.1.1",
-    "webpack-dev-server": "^2.4.5",
-    "webpack": "^2.5.1"
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -50,13 +54,6 @@
     "test": "mocha --compilers js:babel-core/register --opts mocha.opts src/**/*.spec.js",
     "Test+Coverage": "nyc -all -e .jsx npm test",
     "CoverageReport": "nyc report"
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0",
-      "react"
-    ]
   },
   "jest": {
     "preset": "react"
