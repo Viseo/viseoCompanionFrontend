@@ -38,10 +38,12 @@
     "react-big-calendar": "^0.14.0",
     "react-datepicker": "^0.41.1",
     "react-dom": "^15.4.2",
+    "react-fileupload": "^2.4.0",
+    "react-icons": "^2.2.5",
     "react-modal": "^1.7.7",
     "react-router-dom": "^4.1.1",
-    "webpack-dev-server": "^2.4.5",
-    "webpack": "^2.5.1"
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5"
   },
   "scripts": {
     "start": "react-scripts start",

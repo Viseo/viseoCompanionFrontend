@@ -14,7 +14,8 @@ import * as util from '../utils/util';
 import HorizontalToggleBar from '../components/horizontalToggleBar';
 import categories from '../utils/eventCategories';
 import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
-
+import FileUpload  from 'react-fileupload';
+import FaDownload from 'react-icons/lib/fa/download';
 export default class AddEvent extends Component {
     constructor(props) {
         super(props);
@@ -36,7 +37,9 @@ export default class AddEvent extends Component {
             keyWords: '',
             description: '',
             errorType: '',
-            categoryId: ''
+            categoryId: '',
+            imageName: '',
+            imageFile: null
         };
         this.generateSelectHours();
     }
@@ -128,7 +131,7 @@ export default class AddEvent extends Component {
                 this.state.location,
                 this.state.keyWords,
                 this.state.categoryId)
-            if (await db.addEvent(newEvent)) {
+            if (await db.addEvent(newEvent, this.state.imageFile)) {
                 this.emptyFields();
                 this.displaySuccessMessage();
                 this.props.history.push('/home');
@@ -335,6 +338,7 @@ export default class AddEvent extends Component {
         this.setState({categoryId: categoryId});
     }
 
+
     renderKeyWordsInput() {
         return (
             <Textarea
@@ -348,6 +352,44 @@ export default class AddEvent extends Component {
         );
     }
 
+
+    renderImageUpload() {
+
+        const options = {
+            baseUrl: '/add',
+            accept: 'image/*',
+            numberLimit: 1,
+            chooseAndUpload: false,
+            chooseFile: (files) => {
+                // console.log('you choose',typeof files == 'string' ? files : files[0].name)
+
+                this.setState({
+                    imageName:files[0].name,
+                    imageFile:files[0]
+                })
+
+
+            },
+
+        }
+
+
+        return (
+            <FileUpload
+                options={options}
+                ref="fileUpload"
+            >
+                <p>{this.state.imageName}</p>
+                <div ref="chooseBtn">
+                    <FaDownload />
+                    <span> Ajouter une image</span>
+                </div>
+            </FileUpload>
+
+        );
+    }
+
+
     render() {
         let nameInput = this.renderNameInput();
         let dateInput = this.renderDateInput();
@@ -356,6 +398,7 @@ export default class AddEvent extends Component {
         let descriptionInput = this.renderDescriptionInput();
         let categoryInput = this.renderCategoryInput();
         let ketWordsInput = this.renderKeyWordsInput();
+        let imageUpload = this.renderImageUpload();
         return (
             <div className="new-event-form">
                 <h1>Ajouter Evènement</h1>
@@ -383,6 +426,10 @@ export default class AddEvent extends Component {
                         </Row>
                         <Row>
                             {ketWordsInput}
+                        </Row>
+                        <Row>
+
+                            {imageUpload}
                         </Row>
                         <Row>
                             <div className="error errorForm">{this.state.errorType}</div>

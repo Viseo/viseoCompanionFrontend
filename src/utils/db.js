@@ -5,29 +5,44 @@
 import settings from '../config/settings';
 import User from './user';
 
-async function addEvent(event){
+async function addEvent(event, imageFile) {
     try {
-        let response = await fetch(settings.api.addEvent + '?host=1', {
+        var formData = new FormData();
+
+        formData.append('file', imageFile);
+
+        let responseImage = await fetch(settings.api.uploadImage, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "name": event.name,
-                "datetime": event.date,
-                "description": event.description,
-                "keyWords": event.keyWords,
-                "place": event.location,
-                "category": event.category
-            })
+            body: formData
         });
-        return (await response.status === 200);
+
+        let url = await responseImage.text();
+
+
+        if (await responseImage.status === 200) {
+            let response = await fetch(settings.api.addEvent + '?host=1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "name": event.name,
+                    "datetime": event.date,
+                    "description": event.description,
+                    "keyWords": event.keyWords,
+                    "place": event.location,
+                    "category": event.category,
+                    "imageUrl": url
+                })
+            });
+        }
+        return await responseImage.status === 200;
     } catch (error) {
         console.warn('db::addEvent ' + error);
     }
 }
 
-async function EditEvent(event){
+async function EditEvent(event) {
     try {
         let response = await fetch(settings.api.editEvent, {
             method: 'PUT',
@@ -50,11 +65,11 @@ async function EditEvent(event){
     }
 }
 
-async function deleteEvent(id){
+async function deleteEvent(id) {
     console.log('db::deleteEvent : Demande de suppression de l event ' + id);
 
     try {
-        let response = await fetch(settings.api.deleteEvent+id, {
+        let response = await fetch(settings.api.deleteEvent + id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
