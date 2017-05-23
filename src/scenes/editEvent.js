@@ -1,17 +1,16 @@
-import React, {Component} from 'react';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import locationLogo from '../images/locationLogo.png';
-import './addEvent.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import Event from '../utils/event';
-import db from '../utils/db';
-import * as util from '../utils/util';
-import HorizontalToggleBar from '../components/horizontalToggleBar';
-import categories from '../utils/eventCategories';
-import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react';
+import React, {Component} from "react";
+import DatePicker from "react-datepicker";
+import moment from "moment";
+import locationLogo from "../images/locationLogo.png";
+import "./addEvent.css";
+import "react-datepicker/dist/react-datepicker.css";
+import db from "../utils/db";
+import * as util from "../utils/util";
+import HorizontalToggleBar from "../components/horizontalToggleBar";
+import categories from "../utils/eventCategories";
+import {Button, Col, Container, Input, Option, Row, Textarea} from "muicss/react";
 import settings from "../config/settings"; //https://www.muicss.com/docs/v1/react;
-import  Modal from "react-modal"
+import Modal from "react-modal";
 
 export default class EditEvent extends Component {
     constructor(props) {
@@ -387,38 +386,38 @@ export default class EditEvent extends Component {
 
     renderModal() {
         return (
-                <Modal
-                    isOpen={this.state.modalVisible}
-                    closeTimeoutMS={20}
-                    style={modalStyle}
-                    contentLabel="Modal"
-                >
-                    <p>Etes-vous sûr(e) de vouloir supprimer?</p>
-                    <div>
-                        <div style={{display: 'inline-block'}}>
-                            <Button
-                                variant="flat"
-                                color="primary"
-                                onClick={() => {
-                                    this.setState({
-                                        modalVisible:false
-                                    })
-                                }}
-                            >
-                                Annuler
-                            </Button>
-                        </div>
-                        <div style={{display: 'inline-block'}}>
-                            <Button
-                                variant="flat"
-                                color="danger"
-                                onClick={this.OnConfirmDelete}
-                            >
-                                Confirmer
-                            </Button>
-                        </div>
+            <Modal
+                isOpen={this.state.modalVisible}
+                closeTimeoutMS={20}
+                style={modalStyle}
+                contentLabel="Modal"
+            >
+                <p>Etes-vous sûr(e) de vouloir supprimer?</p>
+                <div>
+                    <div style={{display: 'inline-block'}}>
+                        <Button
+                            variant="flat"
+                            color="primary"
+                            onClick={() => {
+                                this.setState({
+                                    modalVisible: false
+                                })
+                            }}
+                        >
+                            Annuler
+                        </Button>
                     </div>
-                </Modal>
+                    <div style={{display: 'inline-block'}}>
+                        <Button
+                            variant="flat"
+                            color="danger"
+                            onClick={this.OnConfirmDelete}
+                        >
+                            Confirmer
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         )
     }
 
@@ -431,9 +430,12 @@ export default class EditEvent extends Component {
         let categoryInput = this.renderCategoryInput();
         let ketWordsInput = this.renderKeyWordsInput();
         let participants = this.state.participants.map(participant => {
+            let participantName = participant.firstName ?
+                participant.firstName + " " + participant.lastName :
+                participant.email;
             return (
                 <Row key={participant.id}>
-                    {participant.firstName} {participant.lastName}
+                    {participantName}
                 </Row>
             )
         });
@@ -530,12 +532,12 @@ const modalStyle = {
     },
     content: {
         position: 'absolute',
-        top:'50%',
-        left:'50%',
-        right:'auto',
-        bottom:'auto',
-        marginRight:'-50%',
-        transform:'translate(-50%,-50%)',
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%,-50%)',
         border: '1px solid #ccc',
         background: '#fff',
         WebkitOverflowScrolling: 'touch',
