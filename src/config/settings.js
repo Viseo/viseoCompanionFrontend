@@ -18,7 +18,6 @@ const restRoutes = {
     addEvent: SERVER_API_URL + 'events',
     getEvent: SERVER_API_URL + 'events/',
     editEvent: SERVER_API_URL + 'events/',
-    // deleteEvent:SERVER_API_URL + 'event/',
     getEvents: SERVER_API_URL + 'events/',
     authenticate: SERVER_API_URL + 'authenticate',
     changePassword: SERVER_API_URL + 'changePassword',
