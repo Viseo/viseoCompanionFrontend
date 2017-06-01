@@ -118,7 +118,7 @@ export default class ResetPassword extends Component {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    uzerId: id,
+                    userId: id,
                     password,
                     tokenGuid: token
                 })
