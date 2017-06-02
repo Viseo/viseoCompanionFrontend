@@ -10,16 +10,16 @@ async function addEvent(event) {
         let response = await fetch(settings.api.addEvent + '?host=1', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "name": event.name,
-                "datetime": event.date,
-                "description": event.description,
-                "keyWords": event.keyWords,
-                "place": event.location,
-                "category": event.category
-            })
+                'name': event.name,
+                'datetime': event.date,
+                'description': event.description,
+                'keyWords': event.keyWords,
+                'place': event.location,
+                'category': event.category,
+            }),
         });
         return (await response.status === 200);
     } catch (error) {
@@ -32,17 +32,17 @@ async function EditEvent(event) {
         let response = await fetch(settings.api.editEvent, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "id": event.id,
-                "name": event.name,
-                "datetime": event.datetime,
-                "description": event.description,
-                "keyWords": event.keyWords,
-                "place": event.location,
-                "category": event.category
-            })
+                'id': event.id,
+                'name': event.name,
+                'datetime': event.datetime,
+                'description': event.description,
+                'keyWords': event.keyWords,
+                'place': event.location,
+                'category': event.category,
+            }),
         });
         return (await response.status === 200);
     } catch (error) {
@@ -55,8 +55,8 @@ async function deleteEvent(id) {
         let response = await fetch(settings.api.deleteEvent(id), {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         });
         return (await response.status === 200);
     } catch (error) {
@@ -69,12 +69,12 @@ async function authenticateAdmin(email, password) {
         let response = await fetch(settings.api.authenticate, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "email": email,
-                "password": password
-            })
+                'email': email,
+                'password': password,
+            }),
         });
         if (await response.status === 302) {
             let user = await response.json();
@@ -89,11 +89,45 @@ async function authenticateAdmin(email, password) {
     return null;
 }
 
+async function getComments (idEvent){
+    try {
+        // Fetch  comments By Event
+        let commentsResponse = await fetch(settings.api.getCommentsByEvent(idEvent));
+        let commentsJson = await commentsResponse.json();
+        let comments = [];
+
+        if (await commentsResponse.status === 200) {
+            for (let i = 0; i < commentsJson.length; i++) {
+                let comment = commentsJson[i];
+                comments.push({
+                    id: comment.id,
+                    version: comment.version,
+                    content: comment.content,
+                    date: comment.datetime,
+                    writer: comment.writer,
+                    eventId: comment.eventId,
+                    children: comment.childComments,
+                    nbLike: comment.nbLike,
+                    likers: comment.likers,
+                });
+            }
+
+            return comments;
+        }
+
+    } catch (error) {
+        console.warn('comments::fetchComments ' + error);
+        return -1;
+    }
+    return null;
+};
+
 const db = {
     addEvent,
     deleteEvent,
     EditEvent,
-    authenticateAdmin
+    authenticateAdmin,
+    getComments,
 };
 
 export default db;
