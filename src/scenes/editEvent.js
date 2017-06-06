@@ -1,16 +1,22 @@
-import React, {Component} from "react";
-import DatePicker from "react-datepicker";
-import moment from "moment";
-import locationLogo from "../images/locationLogo.png";
-import "./addEvent.css";
-import "react-datepicker/dist/react-datepicker.css";
-import db from "../utils/db";
-import * as util from "../utils/util";
-import HorizontalToggleBar from "../components/horizontalToggleBar";
-import categories from "../utils/eventCategories";
-import {Button, Col, Container, Input, Option, Row, Textarea} from "muicss/react";
-import settings from "../config/settings"; //https://www.muicss.com/docs/v1/react;
-import Modal from "react-modal";
+import React, {Component} from 'react';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import locationLogo from '../images/locationLogo.png';
+import './addEvent.css';
+import 'react-datepicker/dist/react-datepicker.css';
+import db from '../utils/db';
+import * as util from '../utils/util';
+import HorizontalToggleBar from '../components/horizontalToggleBar';
+import categories from '../utils/eventCategories';
+import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react';
+import settings from '../config/settings'; //https://www.muicss.com/docs/v1/react;
+import Modal from 'react-modal';
+import {ListView}  from 'react-scrollable-list-view';
+import {ListViewItem}  from 'react-scrollable-list-view';
+import FaClockO from 'react-icons/lib/fa/clock-o';
+import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
+import FaTimesCircle from 'react-icons/lib/fa/times-circle';
+import FaMailReply from 'react-icons/lib/fa/mail-reply';
 
 export default class EditEvent extends Component {
     constructor(props) {
@@ -37,15 +43,17 @@ export default class EditEvent extends Component {
             errorType: '',
             categoryId: 0,
             participants: [],
-            modalVisible: false
+            comments: [],
+            modalVisible: false,
         };
+        this.loadComment();
         this.loadEvent();
         this.generateSelectHours();
     }
 
     loadEvent = async () => {
-        let eventsResponse = await fetch(settings.api.getEvent + this.state.id)
-        let event = await eventsResponse.json()
+        let eventsResponse = await fetch(settings.api.getEvent + this.state.id);
+        let event = await eventsResponse.json();
         this.offset = 2;
         let datetime = moment(event.datetime);
         this.setState({
@@ -54,12 +62,17 @@ export default class EditEvent extends Component {
             categoryId: event.category,
             date: datetime,
             isDateSet: true,
-            time: datetime.format("HH:mm"),
+            time: datetime.format('HH:mm'),
             isTimeSet: true,
-        })
-    }
+        });
+    };
 
-
+    loadComment = async () => {
+        let comments = await db.getComments(this.state.id);
+        this.setState({
+            comments: comments,
+        });
+    };
     emptyFields = () => {
         this.setState({
             name: '',
@@ -77,7 +90,7 @@ export default class EditEvent extends Component {
             errorName: '',
             errorType: '',
             timeStyle: 'select_notVisited',
-        })
+        });
     };
 
     generateSelectHours() {
@@ -87,10 +100,10 @@ export default class EditEvent extends Component {
         this.state.hours.push(<Option value="0" label="Horaire" key="Horaire"/>);
         for (let i = startHour; i <= endHour; i++) {
 
-            let hourString = i + ":00";
+            let hourString = i + ':00';
             this.state.hours.push(<Option value={hourString}
                                           label={hourString} key={hourString}/>);
-            hourString = i + ":30";
+            hourString = i + ':30';
             this.state.hours.push(<Option value={hourString}
                                           label={hourString} key={hourString}/>);
         }
@@ -108,16 +121,16 @@ export default class EditEvent extends Component {
     isFormCorrect = () => {
         let hasError = '';
         if (this.state.name === '' || this.state.errorName !== '') {
-            hasError = " un nom correct";
+            hasError = ' un nom correct';
         }
         if (!this.state.isDateSet) {
-            hasError = util.formatMessageWithSlash(hasError, " une date correcte");
+            hasError = util.formatMessageWithSlash(hasError, ' une date correcte');
         }
         if (!this.state.isTimeSet) {
-            hasError = util.formatMessageWithSlash(hasError, " un horaire");
+            hasError = util.formatMessageWithSlash(hasError, ' un horaire');
         }
         if (this.state.location === '' || this.state.errorLocation !== '') {
-            hasError = util.formatMessageWithSlash(hasError, " un lieu correct");
+            hasError = util.formatMessageWithSlash(hasError, ' un lieu correct');
         }
 
         if (hasError !== '') {
@@ -129,15 +142,15 @@ export default class EditEvent extends Component {
 
     getFormattedDatetime = () => {
         let {date, time} = this.state;
-        let hours = Math.round(parseInt(time.split(":")[0]));
-        let minutes = Math.round(parseInt(time.split(":")[1]));
+        let hours = Math.round(parseInt(time.split(':')[0]));
+        let minutes = Math.round(parseInt(time.split(':')[1]));
         return moment(date)
             .set('hour', hours)
             .add(this.offset, 'h')
             .set('minute', minutes)
             .toDate()
             .getTime();
-    }
+    };
 
     onPressSendEditEvent = async () => {
         if (await this.isFormCorrect()) {
@@ -150,9 +163,9 @@ export default class EditEvent extends Component {
                 datetime,
                 location: state.location,
                 keyWords: state.keyWords,
-                category: state.categoryId
+                category: state.categoryId,
 
-            }
+            };
             if (await db.EditEvent(newEvent)) {
                 this.props.history.push('/home');
             } else {
@@ -163,7 +176,7 @@ export default class EditEvent extends Component {
 
     onPressSendDeleteEvent = async () => {
 
-        this.setState({modalVisible: true})
+        this.setState({modalVisible: true});
     };
 
     //TODO: fix and test this
@@ -180,21 +193,21 @@ export default class EditEvent extends Component {
         if (inputValue.length <= 30) {
             this.setState({
                 name: inputValue,
-                isNameRequired: true
+                isNameRequired: true,
             });
         }
         let isNameValid = util.isNameValid(inputValue);
         if (isNameValid === -2) {
             this.setState({
-                errorName: 'Le nom doit contenir entre 2 et 30 caractères.'
+                errorName: 'Le nom doit contenir entre 2 et 30 caractères.',
             });
         } else if (!isNameValid) {
             this.setState({
-                errorName: 'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !'
+                errorName: 'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !',
             });
         } else {
             this.setState({
-                errorName: ''
+                errorName: '',
             });
         }
     };
@@ -208,15 +221,15 @@ export default class EditEvent extends Component {
         let isLocationValid = util.isLocationValid(inputValue);
         if (isLocationValid === -2) {
             this.setState({
-                errorLocation: 'Le lieu doit contenir au moins deux caractères.'
+                errorLocation: 'Le lieu doit contenir au moins deux caractères.',
             });
         } else if (!isLocationValid) {
             this.setState({
-                errorLocation: 'Le lieu doit seulement contenir des caractères alphanumériques, tiret ou apostrophe.'
+                errorLocation: 'Le lieu doit seulement contenir des caractères alphanumériques, tiret ou apostrophe.',
             });
         } else {
             this.setState({
-                errorLocation: ''
+                errorLocation: '',
             });
         }
     };
@@ -241,7 +254,7 @@ export default class EditEvent extends Component {
             this.setState({
                 datepickerStyle: 'datepicker_empty',
                 isDateSet: false,
-            })
+            });
         }
     };
 
@@ -250,7 +263,7 @@ export default class EditEvent extends Component {
             this.setState({
                 time: '',
                 isTimeSet: false,
-                timeStyle: 'select_empty'
+                timeStyle: 'select_empty',
             });
         } else {
             this.setState({
@@ -323,9 +336,9 @@ export default class EditEvent extends Component {
             <DatePicker
                 selected={this.state.date}
                 onChange={this.handleDateChange}
-                dateFormat={"DD/MM/YYYY"}
+                dateFormat={'DD/MM/YYYY'}
                 placeholderText="Date"
-                todayButton={"Aujourd'hui"}
+                todayButton={'Aujourd\'hui'}
                 minDate={moment()}
                 className={this.state.datepickerStyle}
             />
@@ -369,7 +382,7 @@ export default class EditEvent extends Component {
     onCategorySelected = (categoryName) => {
         let categoryId = categories.eventCategories.indexOf(categoryName);
         this.setState({categoryId: categoryId});
-    }
+    };
 
     renderKeyWordsInput() {
         return (
@@ -400,8 +413,8 @@ export default class EditEvent extends Component {
                             color="primary"
                             onClick={() => {
                                 this.setState({
-                                    modalVisible: false
-                                })
+                                    modalVisible: false,
+                                });
                             }}
                         >
                             Annuler
@@ -418,7 +431,14 @@ export default class EditEvent extends Component {
                     </div>
                 </div>
             </Modal>
-        )
+        );
+    }
+
+    formatDate(date) {
+        if (!date)
+            return [];
+        let dateTime = moment(date);
+        return dateTime.calendar().split('/');
     }
 
     render() {
@@ -431,14 +451,62 @@ export default class EditEvent extends Component {
         let ketWordsInput = this.renderKeyWordsInput();
         let participants = this.state.participants.map(participant => {
             let participantName = participant.firstName ?
-                participant.firstName + " " + participant.lastName :
+                participant.firstName + ' ' + participant.lastName :
                 participant.email;
             return (
                 <Row key={participant.id}>
                     {participantName}
                 </Row>
-            )
+            );
         });
+        let commentsList = this.state.comments.map(comment => {
+            let [day, time] = this.formatDate(comment.date);
+
+            return (
+                <ListViewItem height={100} key={comment.id}>
+                    <Row >
+                        <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
+                            <Col md="6" style={{textAlign: 'left'}}>
+                                <Row style={{color: 'darkred', fontWeight: 'bold'}}>{comment.writer.firstName}</Row>
+                            </Col>
+                            <Col md="6" class="time" style={{marginTop: 8, textAlign: 'right'}}>
+                                <FaClockO style={{fontSize: 16}}/> {day} {time}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="12">
+                                {comment.content}
+                            </Col>
+                        </Row>
+                        <Row>
+
+                            <Button
+                                variant="flat"
+                                className="deleteButton"
+                            >
+                                <FaCheckCircleO style={{fontSize: 16, marginRight: 5,color:'#42A5F5'}}/>
+                                Publier
+                            </Button>
+                            <Button
+                                variant="flat"
+                                className="deleteButton"
+                            >
+                                <FaTimesCircle style={{fontSize: 16, marginRight: 5,color:'#B71C1C'}}/>
+                                Bloquer
+                            </Button>
+                            <Button
+                                variant="flat"
+                                className="deleteButton"
+                            >
+                                <FaMailReply style={{fontSize: 16, marginRight: 5,color:'#558B2F'}}/>
+                                Répondre
+                            </Button>
+                        </Row>
+                    </Row>
+                </ListViewItem>
+            );
+        });
+
         let modal = this.renderModal();
 
         return (
@@ -446,7 +514,7 @@ export default class EditEvent extends Component {
                 {modal}
                 <h1>Modifier Evènement</h1>
                 <div className="form" style={{width: '100%'}}>
-                    <Container style={{display: 'inline-block'}}>
+                    <Container style={{display: 'inline-block', width: '50%', padding: 30}}>
                         <Row>
                             {nameInput}
                         </Row>
@@ -502,24 +570,50 @@ export default class EditEvent extends Component {
                     <Container style={{
                         display: 'inline-block',
                         verticalAlign: 'top',
-                        minWidth: '20%',
-                        minHeight: '100%',
-                        overflowY: 'scroll',
-                        marginLeft: 50,
-                        borderWidth: 1,
-                        borderStyle: 'solid',
-                        borderColor: '#000'
+                        width: '50%',
+                        minHeight: '50%',
+                        padding: 50,
                     }}>
-                        <Row>
-                            <h3>Participants</h3>
-                        </Row>
-                        {participants}
+                        <Container style={{
+                            verticalAlign: 'top',
+                            width: '80%',
+                            minHeight: '50%',
+                            overflowY: 'scroll',
+                            marginLeft: 50,
+                            borderWidth: 1,
+                            borderStyle: 'solid',
+                            borderColor: '#000',
+                            marginBottom: 10,
+
+                        }}>
+                            <Row>
+                                <h3>Participants</h3>
+                            </Row>
+                            {participants}
+                        </Container>
+                        <Container style={{
+                            verticalAlign: 'bottom',
+                            minHeight: '50%',
+                            marginLeft: 50,
+                            borderWidth: 1,
+                            borderStyle: 'solid',
+                            borderColor: '#000',
+                            width: '80%',
+                        }}>
+                            <Row>
+                                <h3>Commentaires</h3>
+                                <ListView aveCellHeight={100}>
+                                    {commentsList}
+                                </ListView>
+                            </Row>
+                        </Container>
                     </Container>
+
                 </div>
             </div>
         );
     }
-}
+};
 
 const modalStyle = {
     overlay: {
@@ -528,7 +622,7 @@ const modalStyle = {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.75)'
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
     },
     content: {
         position: 'absolute',
@@ -544,5 +638,5 @@ const modalStyle = {
         borderRadius: '4px',
         outline: 'none',
         padding: '20px',
-    }
-}
+    },
+};
