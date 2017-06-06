@@ -9,7 +9,7 @@
     //let SERVER_API_URL = 'http://10.33.178.149:8080/api/';
 
 // LEO
-    let SERVER_API_URL = 'http://10.33.178.119:8080/'
+    let SERVER_API_URL = 'http://10.33.178.149:8080/'
 
 // AWS Dev server
 // let SERVER_API_URL = 'http://54.229.99.105:8080/viseocompanion/api/';
@@ -22,6 +22,9 @@ const restRoutes = {
     authenticate: SERVER_API_URL + 'authenticate',
     changePassword: SERVER_API_URL + 'changePassword',
     deleteEvent: eventId => (SERVER_API_URL + 'events/' + eventId),
+    addChildComment: (commentId) => {
+        return SERVER_API_URL + 'comments/'+commentId;
+    },
     getCommentsByEvent: (eventId) => {
         return SERVER_API_URL + 'comments/events/' + eventId ;
     },

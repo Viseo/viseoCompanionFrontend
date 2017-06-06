@@ -12,11 +12,8 @@ import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react
 import settings from '../config/settings'; //https://www.muicss.com/docs/v1/react;
 import Modal from 'react-modal';
 import {ListView}  from 'react-scrollable-list-view';
-import {ListViewItem}  from 'react-scrollable-list-view';
-import FaClockO from 'react-icons/lib/fa/clock-o';
-import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
-import FaTimesCircle from 'react-icons/lib/fa/times-circle';
-import FaMailReply from 'react-icons/lib/fa/mail-reply';
+
+import CommentCard from "../components/CommentCard";
 
 export default class EditEvent extends Component {
     constructor(props) {
@@ -45,6 +42,8 @@ export default class EditEvent extends Component {
             participants: [],
             comments: [],
             modalVisible: false,
+            display: 'none'
+
         };
         this.loadComment();
         this.loadEvent();
@@ -463,49 +462,11 @@ export default class EditEvent extends Component {
             let [day, time] = this.formatDate(comment.date);
 
             return (
-                <ListViewItem height={100} key={comment.id}>
-                    <Row >
-                        <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
-                            <Col md="6" style={{textAlign: 'left'}}>
-                                <Row style={{color: 'darkred', fontWeight: 'bold'}}>{comment.writer.firstName}</Row>
-                            </Col>
-                            <Col md="6" class="time" style={{marginTop: 8, textAlign: 'right'}}>
-                                <FaClockO style={{fontSize: 16}}/> {day} {time}
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md="12">
-                                {comment.content}
-                            </Col>
-                        </Row>
-                        <Row>
-
-                            <Button
-                                variant="flat"
-                                className="deleteButton"
-                            >
-                                <FaCheckCircleO style={{fontSize: 16, marginRight: 5,color:'#42A5F5'}}/>
-                                Publier
-                            </Button>
-                            <Button
-                                variant="flat"
-                                className="deleteButton"
-                            >
-                                <FaTimesCircle style={{fontSize: 16, marginRight: 5,color:'#B71C1C'}}/>
-                                Bloquer
-                            </Button>
-                            <Button
-                                variant="flat"
-                                className="deleteButton"
-                            >
-                                <FaMailReply style={{fontSize: 16, marginRight: 5,color:'#558B2F'}}/>
-                                Répondre
-                            </Button>
-                        </Row>
-                    </Row>
-                </ListViewItem>
-            );
+                <CommentCard comment={comment} key={comment.id} day={day}  time={time} eventId={this.state.id}/>
+            )
+                ;
         });
+
 
         let modal = this.renderModal();
 
@@ -606,6 +567,7 @@ export default class EditEvent extends Component {
                                     {commentsList}
                                 </ListView>
                             </Row>
+
                         </Container>
                     </Container>
 

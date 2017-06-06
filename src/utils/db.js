@@ -122,12 +122,27 @@ async function getComments (idEvent){
     return null;
 };
 
+export async function addComment(childComment) {
+    try {
+        await fetch(settings.api.addChildComment(childComment.commentId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(childComment)
+        });
+    } catch (error) {
+        console.warn('db::addChildComment ' + error);
+    }
+    return false;
+}
 const db = {
     addEvent,
     deleteEvent,
     EditEvent,
     authenticateAdmin,
     getComments,
+    addComment
 };
 
 export default db;
