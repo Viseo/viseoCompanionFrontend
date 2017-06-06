@@ -14,6 +14,9 @@ import Modal from 'react-modal';
 import {ListView}  from 'react-scrollable-list-view';
 import {ListViewItem}  from 'react-scrollable-list-view';
 import FaClockO from 'react-icons/lib/fa/clock-o';
+import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
+import FaTimesCircle from 'react-icons/lib/fa/times-circle';
+import FaMailReply from 'react-icons/lib/fa/mail-reply';
 
 export default class EditEvent extends Component {
     constructor(props) {
@@ -463,11 +466,11 @@ export default class EditEvent extends Component {
                 <ListViewItem height={100} key={comment.id}>
                     <Row >
                         <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
-                            <Col md="8">
+                            <Col md="6" style={{textAlign: 'left'}}>
                                 <Row style={{color: 'darkred', fontWeight: 'bold'}}>{comment.writer.firstName}</Row>
                             </Col>
-                            <Col md="4" class="time">
-                                <FaClockO /> {day} {time}
+                            <Col md="6" class="time" style={{marginTop: 8, textAlign: 'right'}}>
+                                <FaClockO style={{fontSize: 16}}/> {day} {time}
                             </Col>
                         </Row>
                         <Row>
@@ -476,25 +479,26 @@ export default class EditEvent extends Component {
                             </Col>
                         </Row>
                         <Row>
+
                             <Button
                                 variant="flat"
-                                color="danger"
                                 className="deleteButton"
                             >
+                                <FaCheckCircleO style={{fontSize: 16, marginRight: 5,color:'#42A5F5'}}/>
                                 Publier
                             </Button>
                             <Button
                                 variant="flat"
-                                color="warning"
                                 className="deleteButton"
                             >
+                                <FaTimesCircle style={{fontSize: 16, marginRight: 5,color:'#B71C1C'}}/>
                                 Bloquer
                             </Button>
                             <Button
                                 variant="flat"
-                                color="danger"
                                 className="deleteButton"
                             >
+                                <FaMailReply style={{fontSize: 16, marginRight: 5,color:'#558B2F'}}/>
                                 Répondre
                             </Button>
                         </Row>
@@ -510,7 +514,7 @@ export default class EditEvent extends Component {
                 {modal}
                 <h1>Modifier Evènement</h1>
                 <div className="form" style={{width: '100%'}}>
-                    <Container style={{display: 'inline-block',width: '50%',padding:30}}>
+                    <Container style={{display: 'inline-block', width: '50%', padding: 30}}>
                         <Row>
                             {nameInput}
                         </Row>
@@ -568,7 +572,7 @@ export default class EditEvent extends Component {
                         verticalAlign: 'top',
                         width: '50%',
                         minHeight: '50%',
-                        padding:50
+                        padding: 50,
                     }}>
                         <Container style={{
                             verticalAlign: 'top',

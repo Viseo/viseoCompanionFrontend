@@ -318,6 +318,7 @@ input:focus ~ .bar:before, input:focus ~ .bar:after {
 .ListView-content span {
     position: relative !important;
     min-height: 50px;
+    transform: none !important;
 }
 
 /* active state */
