@@ -21,8 +21,12 @@ const restRoutes = {
     getEvents: SERVER_API_URL + 'events/',
     authenticate: SERVER_API_URL + 'authenticate',
     changePassword: SERVER_API_URL + 'changePassword',
+    updatedComment:SERVER_API_URL +  'comments/',
     deleteEvent: eventId => (SERVER_API_URL + 'events/' + eventId),
     getCommentsByEvent: (eventId) => {
+        return SERVER_API_URL + 'comments/event/' + eventId ;
+    },
+    getAllCommentsByEvent: (eventId) => {
         return SERVER_API_URL + 'comments/events/' + eventId ;
     },
 };

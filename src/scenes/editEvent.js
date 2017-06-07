@@ -4,7 +4,6 @@ import moment from 'moment';
 import locationLogo from '../images/locationLogo.png';
 import './addEvent.css';
 import 'react-datepicker/dist/react-datepicker.css';
-import db from '../utils/db';
 import * as util from '../utils/util';
 import HorizontalToggleBar from '../components/horizontalToggleBar';
 import categories from '../utils/eventCategories';
@@ -17,6 +16,7 @@ import FaClockO from 'react-icons/lib/fa/clock-o';
 import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
 import FaTimesCircle from 'react-icons/lib/fa/times-circle';
 import FaMailReply from 'react-icons/lib/fa/mail-reply';
+import db from '../utils/db';
 
 export default class EditEvent extends Component {
     constructor(props) {
@@ -68,7 +68,7 @@ export default class EditEvent extends Component {
     };
 
     loadComment = async () => {
-        let comments = await db.getComments(this.state.id);
+        let comments = await db.getAllComments(this.state.id);
         this.setState({
             comments: comments,
         });
@@ -96,7 +96,6 @@ export default class EditEvent extends Component {
     generateSelectHours() {
         const startHour = 8;
         const endHour = 19;
-
         this.state.hours.push(<Option value="0" label="Horaire" key="Horaire"/>);
         for (let i = startHour; i <= endHour; i++) {
 
@@ -172,6 +171,39 @@ export default class EditEvent extends Component {
                 this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
             }
         }
+    };
+
+    onPressSendEditComment(comment) {
+        let newComment = {
+            id: comment.id,
+            content: comment.content,
+            datetime: comment.datetime,
+            writer: comment.writer,
+            version: comment.version,
+            eventId: comment.eventId,
+            userId: comment.userId,
+            children: comment.children,
+            likers: comment.likers,
+            publish: true,
+        };
+        db.updateComment(newComment);
+    };
+
+    onPressSendBlockComment(comment) {
+        let newComment = {
+            id: comment.id,
+            content: comment.content,
+            datetime: comment.datetime,
+            writer: comment.writer,
+            version: comment.version,
+            eventId: comment.eventId,
+            userId: comment.userId,
+            children: comment.children,
+            likers: comment.likers,
+            publish: false,
+        };
+        db.updateComment(newComment);
+
     };
 
     onPressSendDeleteEvent = async () => {
@@ -482,23 +514,31 @@ export default class EditEvent extends Component {
 
                             <Button
                                 variant="flat"
-                                className="deleteButton"
+                                className="PublierButton"
+                                onClick={() => {
+                                    this.onPressSendEditComment(comment);
+                                }}
+
                             >
-                                <FaCheckCircleO style={{fontSize: 16, marginRight: 5,color:'#42A5F5'}}/>
+                                <FaCheckCircleO style={{fontSize: 16, marginRight: 5, color: '#42A5F5'}}/>
                                 Publier
                             </Button>
                             <Button
                                 variant="flat"
-                                className="deleteButton"
+                                className="BloquerButton"
+                                onClick={() => {
+                                    this.onPressSendBlockComment(comment);
+                                }}
+
                             >
-                                <FaTimesCircle style={{fontSize: 16, marginRight: 5,color:'#B71C1C'}}/>
+                                <FaTimesCircle style={{fontSize: 16, marginRight: 5, color: '#B71C1C'}}/>
                                 Bloquer
                             </Button>
                             <Button
                                 variant="flat"
                                 className="deleteButton"
                             >
-                                <FaMailReply style={{fontSize: 16, marginRight: 5,color:'#558B2F'}}/>
+                                <FaMailReply style={{fontSize: 16, marginRight: 5, color: '#558B2F'}}/>
                                 Répondre
                             </Button>
                         </Row>

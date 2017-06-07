@@ -109,6 +109,7 @@ async function getComments (idEvent){
                     children: comment.childComments,
                     nbLike: comment.nbLike,
                     likers: comment.likers,
+                    //publish: comment.publish,
                 });
             }
 
@@ -122,12 +123,73 @@ async function getComments (idEvent){
     return null;
 };
 
+async function getAllComments (idEvent){
+    try {
+        // Fetch  comments By Event
+        let commentsResponse = await fetch(settings.api.getAllCommentsByEvent(idEvent));
+        let commentsJson = await commentsResponse.json();
+        let comments = [];
+
+        if (await commentsResponse.status === 200) {
+            for (let i = 0; i < commentsJson.length; i++) {
+                let comment = commentsJson[i];
+                comments.push({
+                    id: comment.id,
+                    version: comment.version,
+                    content: comment.content,
+                    date: comment.datetime,
+                    writer: comment.writer,
+                    eventId: comment.eventId,
+                    children: comment.childComments,
+                    nbLike: comment.nbLike,
+                    likers: comment.likers,
+
+                });
+            }
+
+            return comments;
+        }
+
+    } catch (error) {
+        console.warn('comments::fetchComments ' + error);
+        return -1;
+    }
+    return null;
+};
+async function updateComment(comment) {
+    try {
+        let response = await fetch(settings.api.updatedComment, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'id': comment.id,
+                'version': comment.version,
+                'content': comment.content,
+                'datetime': comment.datetime,
+                'eventId': comment.event_id,
+                'writer': comment.writer,
+                'childComments': comment.children,
+                'likers': comment.likers,
+                'nbLike': comment.nbLike,
+                'publish': comment.publish
+            })
+        });
+        return (await response.status === 200);
+    } catch (error) {
+        console.warn('db::editComment ' + error);
+    }
+}
+
 const db = {
     addEvent,
     deleteEvent,
     EditEvent,
     authenticateAdmin,
     getComments,
+    updateComment,
+    getAllComments
 };
 
 export default db;
