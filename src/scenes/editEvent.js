@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import locationLogo from '../images/locationLogo.png';
 import './addEvent.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -12,9 +11,9 @@ import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react
 import settings from '../config/settings'; //https://www.muicss.com/docs/v1/react;
 import Modal from 'react-modal';
 import {ListView}  from 'react-scrollable-list-view';
-
 import CommentCard from "../components/CommentCard";
-
+import moment from "moment"
+import 'moment/locale/fr';
 export default class EditEvent extends Component {
     constructor(props) {
         super(props);
@@ -48,6 +47,13 @@ export default class EditEvent extends Component {
         this.loadComment();
         this.loadEvent();
         this.generateSelectHours();
+    }
+
+    componentWillMount() {
+        this._setLanguage();
+    }
+    _setLanguage() {
+        moment.locale('fr');
     }
 
     loadEvent = async () => {
@@ -462,7 +468,7 @@ export default class EditEvent extends Component {
             let [day, time] = this.formatDate(comment.date);
 
             return (
-                <CommentCard comment={comment} key={comment.id} day={day}  time={time} eventId={this.state.id}/>
+                <CommentCard comment={comment} key={comment.id} day={day} time={time} eventId={this.state.id}/>
             )
                 ;
         });
@@ -563,7 +569,7 @@ export default class EditEvent extends Component {
                         }}>
                             <Row>
                                 <h3>Commentaires</h3>
-                                <ListView aveCellHeight={100}>
+                                <ListView aveCellHeight={250} runwayItems={3} runwayItemsOpposite={2}>
                                     {commentsList}
                                 </ListView>
                             </Row>

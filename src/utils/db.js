@@ -136,13 +136,57 @@ export async function addComment(childComment) {
     }
     return false;
 }
+
+export async function updateComment(comment) {
+    try {
+        let response = await fetch(settings.api.updatedComment, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "id": comment.id,
+                "version": comment.version,
+                "content": comment.content,
+                "datetime": comment.datetime,
+                "eventId": comment.eventId,
+                "writer": comment.writer,
+                "childComments": comment.children,
+                "likers": comment.likers,
+                "nbLike": comment.nbLike
+            })
+        });
+        if (response)
+            return true;
+    } catch (error) {
+        console.warn(error);
+    }
+}
+export async function deleteComment(commentId) {
+    try {
+        let response = await fetch(settings.api.deleteComment(commentId), {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (response) {
+            return true;
+        }
+    } catch (error
+        ) {
+        console.warn(error);
+    }
+}
 const db = {
     addEvent,
     deleteEvent,
     EditEvent,
     authenticateAdmin,
     getComments,
-    addComment
+    addComment,
+    updateComment,
+    deleteComment
 };
 
 export default db;

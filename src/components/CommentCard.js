@@ -8,6 +8,9 @@ import FaPaperPlane from "react-icons/lib/fa/paper-plane";
 import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react';
 import moment from "moment";
 import {addComment} from "../utils/db";
+import ChildCommentCard from "./ChildCommentCard";
+import {ListView}  from 'react-scrollable-list-view';
+
 export default class CommentCard extends Component {
     constructor(props) {
         super(props);
@@ -22,6 +25,8 @@ export default class CommentCard extends Component {
     render() {
         const {comment, day, time} = this.props;
         const replyBlock = this.state.showReply ? this.renderReply(comment) : null;
+        console.warn(comment)
+        const childCommentList = this.props.comment.children.length>0 ? this.renderChildComments(comment.children) : null
         return (
             <div>
                 <ListViewItem height={100} key={comment.id}>
@@ -63,6 +68,7 @@ export default class CommentCard extends Component {
                             </Button>
 
                         </Row>
+                        {childCommentList}
                         {replyBlock}
                     </Row>
                 </ListViewItem>
@@ -88,7 +94,7 @@ export default class CommentCard extends Component {
     }
 
 
-    SendReply (id) {
+    sendReply(id) {
         const childComment = {
             content: this.state.content,
             datetime: moment().valueOf(),
@@ -98,9 +104,38 @@ export default class CommentCard extends Component {
             eventId: this.props.eventId,
             commentId: id
         };
-
         addComment(childComment);
-    };
+        this.setState({
+            showReply: false
+        })
+    }
+
+
+    formatDate(date) {
+        if (!date)
+            return [];
+        let dateTime = moment(date);
+        return dateTime.calendar().split('/');
+    }
+
+    renderChildComments(childrens) {
+        let childList = childrens.map(children => {
+            let [day, time] = this.formatDate(children.datetime);
+
+            return (
+                <ChildCommentCard childComment={children} key={children.id} day={day}
+                                  time={time}/>
+            )
+                ;
+        });
+        return (
+            <Row>
+                <ListView aveCellHeight={100}>
+                    {childList}
+                </ListView>
+            </Row>
+        )
+    }
 
     renderReply(comment) {
         return (
@@ -121,7 +156,10 @@ export default class CommentCard extends Component {
                     <Button
                         variant="flat"
                         color="primary"
-                        style={{backgroundColor: '#42A5F5', color: '#fff'}} onClick={this.SendReply(comment.id)}
+                        style={{backgroundColor: '#42A5F5', color: '#fff'}}
+                        onClick={() => {
+                            this.sendReply(comment.id)
+                        }}
                     >
                         <FaPaperPlane style={{fontSize: 16, marginRight: 5, color: '#fff'}}/>
                         Envoyer
