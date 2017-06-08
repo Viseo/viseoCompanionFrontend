@@ -518,7 +518,6 @@ export default class EditEvent extends Component {
                                 onClick={() => {
                                     this.onPressSendEditComment(comment);
                                 }}
-
                             >
                                 <FaCheckCircleO style={{fontSize: 16, marginRight: 5, color: '#42A5F5'}}/>
                                 Publier
