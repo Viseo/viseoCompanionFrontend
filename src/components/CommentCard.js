@@ -7,7 +7,6 @@ import FaMailReply from 'react-icons/lib/fa/mail-reply';
 import FaPaperPlane from "react-icons/lib/fa/paper-plane";
 import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react';
 import moment from "moment";
-import {addComment} from "../utils/db";
 import ChildCommentCard from "./ChildCommentCard";
 import {ListView}  from 'react-scrollable-list-view';
 import db from "../utils/db";
@@ -47,6 +46,7 @@ export default class CommentCard extends Component {
                         </Row>
                         <Row>
                             <Button
+                                disabled={comment.publish}
                                 variant="flat"
                                 onClick={() => {
                                     this.onPressPublishComment(comment);
@@ -56,6 +56,7 @@ export default class CommentCard extends Component {
                                 Publier
                             </Button>
                             <Button
+                                disabled={!comment.publish}
                                 variant="flat"
                                 onClick={() => {
                                     this.onPressSendBlockComment(comment);
@@ -102,6 +103,7 @@ export default class CommentCard extends Component {
 
 
     sendReply(id) {
+
         const childComment = {
             content: this.state.content,
             datetime: moment().valueOf(),
@@ -109,12 +111,12 @@ export default class CommentCard extends Component {
                 id: 1,
             },
             eventId: this.props.eventId,
-            commentId: id
         };
-        addComment(childComment);
+        db.addComment(childComment,id);
         this.setState({
             showReply: false
         })
+        window.location.reload();
     }
 
 
@@ -171,7 +173,7 @@ export default class CommentCard extends Component {
                 ;
         });
         return (
-            <Row>
+            <Row style={{paddingLeft:'35'}}>
                 <ListView aveCellHeight={100}>
                     {childList}
                 </ListView>

@@ -79,7 +79,7 @@ export default class EditEvent extends Component {
     };
 
     loadComment = async () => {
-        let comments = await db.getAllComments(this.state.id);
+        let comments = await db.getComments(this.state.id);
         this.setState({
             comments: comments,
         });

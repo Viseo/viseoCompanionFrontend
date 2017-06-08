@@ -40,7 +40,7 @@ export default class ChildCommentCard extends Component {
             ) : null;
         return (
             <div>
-                <ListViewItem height={100} key={childComment.id}>
+                <ListViewItem height={100} key={childComment.id} >
                     <Row >
                         <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
                             <Col md="6" style={{textAlign: 'left'}}>

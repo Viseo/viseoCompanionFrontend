@@ -92,39 +92,6 @@ async function authenticateAdmin(email, password) {
 async function getComments (idEvent){
     try {
         // Fetch  comments By Event
-        let commentsResponse = await fetch(settings.api.getCommentsByEvent(idEvent));
-        let commentsJson = await commentsResponse.json();
-        let comments = [];
-
-        if (await commentsResponse.status === 200) {
-            for (let i = 0; i < commentsJson.length; i++) {
-                let comment = commentsJson[i];
-                comments.push({
-                    id: comment.id,
-                    version: comment.version,
-                    content: comment.content,
-                    date: comment.datetime,
-                    writer: comment.writer,
-                    eventId: comment.eventId,
-                    children: comment.childComments,
-                    nbLike: comment.nbLike,
-                    likers: comment.likers,
-                });
-            }
-
-            return comments;
-        }
-
-    } catch (error) {
-        console.warn('comments::fetchComments ' + error);
-        return -1;
-    }
-    return null;
-};
-
-async function getAllComments (idEvent){
-    try {
-        // Fetch  comments By Event
         let commentsResponse = await fetch(settings.api.getAllCommentsByEvent(idEvent));
         let commentsJson = await commentsResponse.json();
         let comments = [];
@@ -142,7 +109,7 @@ async function getAllComments (idEvent){
                     children: comment.childComments,
                     nbLike: comment.nbLike,
                     likers: comment.likers,
-
+                    publish: comment.publish,
                 });
             }
 
@@ -182,9 +149,10 @@ async function updateComment(comment) {
     }
 }
 
-export async function addComment(childComment) {
+export async function addComment(childComment,id) {
     try {
-        await fetch(settings.api.addChildComment(childComment.commentId), {
+
+        await fetch(settings.api.addChildComment(id), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -219,7 +187,6 @@ const db = {
     EditEvent,
     authenticateAdmin,
     getComments,
-    getAllComments,
     addComment,
     updateComment,
     deleteComment
