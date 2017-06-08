@@ -155,6 +155,7 @@ async function getAllComments (idEvent){
     }
     return null;
 };
+
 async function updateComment(comment) {
     try {
         let response = await fetch(settings.api.updatedComment, {

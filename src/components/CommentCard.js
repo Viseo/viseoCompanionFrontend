@@ -10,6 +10,7 @@ import moment from "moment";
 import {addComment} from "../utils/db";
 import ChildCommentCard from "./ChildCommentCard";
 import {ListView}  from 'react-scrollable-list-view';
+import db from "../utils/db";
 
 export default class CommentCard extends Component {
     constructor(props) {
@@ -25,7 +26,7 @@ export default class CommentCard extends Component {
     render() {
         const {comment, day, time} = this.props;
         const replyBlock = this.state.showReply ? this.renderReply(comment) : null;
-        console.warn(comment)
+
         const childCommentList = this.props.comment.children.length>0 ? this.renderChildComments(comment.children) : null
         return (
             <div>
@@ -47,12 +48,18 @@ export default class CommentCard extends Component {
                         <Row>
                             <Button
                                 variant="flat"
+                                onClick={() => {
+                                    this.onPressPublishComment(comment);
+                                }}
                             >
                                 <FaCheckCircleO style={{fontSize: 16, marginRight: 5, color: '#42A5F5'}}/>
                                 Publier
                             </Button>
                             <Button
                                 variant="flat"
+                                onClick={() => {
+                                    this.onPressSendBlockComment(comment);
+                                }}
                             >
                                 <FaTimesCircle style={{fontSize: 16, marginRight: 5, color: '#B71C1C'}}/>
                                 Bloquer
@@ -117,6 +124,39 @@ export default class CommentCard extends Component {
         let dateTime = moment(date);
         return dateTime.calendar().split('/');
     }
+
+    onPressPublishComment(comment) {
+        let newComment = {
+            id: comment.id,
+            content: comment.content,
+            datetime: comment.datetime,
+            writer: comment.writer,
+            version: comment.version,
+            eventId: comment.eventId,
+            userId: comment.userId,
+            children: comment.children,
+            likers: comment.likers,
+            publish: true,
+        };
+        db.updateComment(newComment);
+    };
+
+    onPressSendBlockComment(comment) {
+        let newComment = {
+            id: comment.id,
+            content: comment.content,
+            datetime: comment.datetime,
+            writer: comment.writer,
+            version: comment.version,
+            eventId: comment.eventId,
+            userId: comment.userId,
+            children: comment.children,
+            likers: comment.likers,
+            publish: false,
+        };
+        db.updateComment(newComment);
+
+    };
 
     renderChildComments(childrens) {
         let childList = childrens.map(children => {
