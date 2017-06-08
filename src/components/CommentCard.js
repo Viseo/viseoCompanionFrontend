@@ -139,6 +139,7 @@ export default class CommentCard extends Component {
             publish: true,
         };
         db.updateComment(newComment);
+        window.location.reload();
     };
 
     onPressSendBlockComment(comment) {
@@ -155,6 +156,7 @@ export default class CommentCard extends Component {
             publish: false,
         };
         db.updateComment(newComment);
+        window.location.reload();
 
     };
 
