@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import locationLogo from '../images/locationLogo.png';
 import './addEvent.css';
 import 'react-datepicker/dist/react-datepicker.css';
-import db from '../utils/db';
 import * as util from '../utils/util';
 import HorizontalToggleBar from '../components/horizontalToggleBar';
 import categories from '../utils/eventCategories';
@@ -17,6 +15,10 @@ import FaClockO from 'react-icons/lib/fa/clock-o';
 import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
 import FaTimesCircle from 'react-icons/lib/fa/times-circle';
 import FaMailReply from 'react-icons/lib/fa/mail-reply';
+import db from '../utils/db';
+import CommentCard from "../components/CommentCard";
+import moment from "moment"
+import 'moment/locale/fr';
 
 export default class EditEvent extends Component {
     constructor(props) {
@@ -45,10 +47,19 @@ export default class EditEvent extends Component {
             participants: [],
             comments: [],
             modalVisible: false,
+            display: 'none'
+
         };
         this.loadComment();
         this.loadEvent();
         this.generateSelectHours();
+    }
+
+    componentWillMount() {
+        this._setLanguage();
+    }
+    _setLanguage() {
+        moment.locale('fr');
     }
 
     loadEvent = async () => {
@@ -68,7 +79,7 @@ export default class EditEvent extends Component {
     };
 
     loadComment = async () => {
-        let comments = await db.getComments(this.state.id);
+        let comments = await db.getAllComments(this.state.id);
         this.setState({
             comments: comments,
         });
@@ -172,6 +183,39 @@ export default class EditEvent extends Component {
                 this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
             }
         }
+    };
+
+    onPressSendEditComment(comment) {
+        let newComment = {
+            id: comment.id,
+            content: comment.content,
+            datetime: comment.datetime,
+            writer: comment.writer,
+            version: comment.version,
+            eventId: comment.eventId,
+            userId: comment.userId,
+            children: comment.children,
+            likers: comment.likers,
+            publish: true,
+        };
+        db.updateComment(newComment);
+    };
+
+    onPressSendBlockComment(comment) {
+        let newComment = {
+            id: comment.id,
+            content: comment.content,
+            datetime: comment.datetime,
+            writer: comment.writer,
+            version: comment.version,
+            eventId: comment.eventId,
+            userId: comment.userId,
+            children: comment.children,
+            likers: comment.likers,
+            publish: false,
+        };
+        db.updateComment(newComment);
+
     };
 
     onPressSendDeleteEvent = async () => {
@@ -463,50 +507,10 @@ export default class EditEvent extends Component {
             let [day, time] = this.formatDate(comment.date);
 
             return (
-                <ListViewItem height={100} key={comment.id}>
-                    <Row >
-                        <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
-                            <Col md="6" style={{textAlign: 'left'}}>
-                                <Row style={{color: 'darkred', fontWeight: 'bold'}}>{comment.writer.firstName}</Row>
-                            </Col>
-                            <Col md="6" class="time" style={{marginTop: 8, textAlign: 'right'}}>
-                                <FaClockO style={{fontSize: 16}}/> {day} {time}
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md="12">
-                                {comment.content}
-                            </Col>
-                        </Row>
-                        <Row>
-
-                            <Button
-                                variant="flat"
-                                className="deleteButton"
-                            >
-                                <FaCheckCircleO style={{fontSize: 16, marginRight: 5,color:'#42A5F5'}}/>
-                                Publier
-                            </Button>
-                            <Button
-                                variant="flat"
-                                className="deleteButton"
-                            >
-                                <FaTimesCircle style={{fontSize: 16, marginRight: 5,color:'#B71C1C'}}/>
-                                Bloquer
-                            </Button>
-                            <Button
-                                variant="flat"
-                                className="deleteButton"
-                            >
-                                <FaMailReply style={{fontSize: 16, marginRight: 5,color:'#558B2F'}}/>
-                                Répondre
-                            </Button>
-                        </Row>
-                    </Row>
-                </ListViewItem>
-            );
+                <CommentCard comment={comment} key={comment.id} day={day} time={time} eventId={this.state.id}/>
+            )
+                ;
         });
-
         let modal = this.renderModal();
 
         return (
