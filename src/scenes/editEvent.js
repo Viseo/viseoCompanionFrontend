@@ -3,7 +3,6 @@ import DatePicker from 'react-datepicker';
 import locationLogo from '../images/locationLogo.png';
 import './addEvent.css';
 import 'react-datepicker/dist/react-datepicker.css';
-import db from '../utils/db';
 import * as util from '../utils/util';
 import HorizontalToggleBar from '../components/horizontalToggleBar';
 import categories from '../utils/eventCategories';
@@ -11,9 +10,16 @@ import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react
 import settings from '../config/settings'; //https://www.muicss.com/docs/v1/react;
 import Modal from 'react-modal';
 import {ListView}  from 'react-scrollable-list-view';
+import {ListViewItem}  from 'react-scrollable-list-view';
+import FaClockO from 'react-icons/lib/fa/clock-o';
+import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
+import FaTimesCircle from 'react-icons/lib/fa/times-circle';
+import FaMailReply from 'react-icons/lib/fa/mail-reply';
+import db from '../utils/db';
 import CommentCard from "../components/CommentCard";
 import moment from "moment"
 import 'moment/locale/fr';
+
 export default class EditEvent extends Component {
     constructor(props) {
         super(props);
@@ -73,7 +79,7 @@ export default class EditEvent extends Component {
     };
 
     loadComment = async () => {
-        let comments = await db.getComments(this.state.id);
+        let comments = await db.getAllComments(this.state.id);
         this.setState({
             comments: comments,
         });
@@ -177,6 +183,39 @@ export default class EditEvent extends Component {
                 this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
             }
         }
+    };
+
+    onPressSendEditComment(comment) {
+        let newComment = {
+            id: comment.id,
+            content: comment.content,
+            datetime: comment.datetime,
+            writer: comment.writer,
+            version: comment.version,
+            eventId: comment.eventId,
+            userId: comment.userId,
+            children: comment.children,
+            likers: comment.likers,
+            publish: true,
+        };
+        db.updateComment(newComment);
+    };
+
+    onPressSendBlockComment(comment) {
+        let newComment = {
+            id: comment.id,
+            content: comment.content,
+            datetime: comment.datetime,
+            writer: comment.writer,
+            version: comment.version,
+            eventId: comment.eventId,
+            userId: comment.userId,
+            children: comment.children,
+            likers: comment.likers,
+            publish: false,
+        };
+        db.updateComment(newComment);
+
     };
 
     onPressSendDeleteEvent = async () => {
@@ -472,8 +511,6 @@ export default class EditEvent extends Component {
             )
                 ;
         });
-
-
         let modal = this.renderModal();
 
         return (
@@ -569,11 +606,10 @@ export default class EditEvent extends Component {
                         }}>
                             <Row>
                                 <h3>Commentaires</h3>
-                                <ListView aveCellHeight={250} runwayItems={3} runwayItemsOpposite={2}>
+                                <ListView aveCellHeight={100}>
                                     {commentsList}
                                 </ListView>
                             </Row>
-
                         </Container>
                     </Container>
 
