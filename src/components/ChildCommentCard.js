@@ -17,27 +17,25 @@ export default class ChildCommentCard extends Component {
     }
 
     render() {
-
         const {childComment, day, time} = this.props;
         const disable = childComment.writer.id == 1 ? false : true;
-
-
         const renderActionComment = childComment.writer.id == 1 ?
             (
                 <Row>
-                    <Row style={{textAlign: 'left'}}>
+                    <Col md="6" style={{textAlign: 'left'}}>
                         <Button color="danger" variant="flat" style={{fontSize: 10}}
                                 onClick={() => {
                                     this.deleteComment(childComment.id)
                                 }}
                         >Supprimer le commentaire</Button>
-                    </Row>
-                    <Row style={{textAlign: 'right'}}>
-                        <Button color="primary" style={{fontSize: 10}} onClick={() => {
-                            this.updateComment(childComment)
-                        }}
-                        ><FaEdit /> Modifier</Button>
-                    </Row>
+                    </Col>
+                    <Col md="6" style={{textAlign: 'right'}}>
+                    <Button color="primary" style={{fontSize: 10}} onClick={() => {
+                        this.updateComment(childComment)
+                    }}
+                    ><FaEdit /> Modifier</Button>
+                    </Col>
+
                 </Row>
             ) : null;
         return (
