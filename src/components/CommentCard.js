@@ -5,7 +5,7 @@ import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
 import FaTimesCircle from 'react-icons/lib/fa/times-circle';
 import FaMailReply from 'react-icons/lib/fa/mail-reply';
 import FaPaperPlane from "react-icons/lib/fa/paper-plane";
-import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react';
+import {Button, Col, Row} from 'muicss/react';
 import moment from "moment";
 import ChildCommentCard from "./ChildCommentCard";
 import {ListView}  from 'react-scrollable-list-view';
@@ -124,7 +124,8 @@ export default class CommentCard extends Component {
         if (!date)
             return [];
         let dateTime = moment(date);
-        return dateTime.calendar().split('/');
+        return dateTime.format(' Do MMMM à HH:MM');
+
     }
 
     onPressPublishComment(comment) {
@@ -164,16 +165,16 @@ export default class CommentCard extends Component {
 
     renderChildComments(childrens) {
         let childList = childrens.map(children => {
-            let [day, time] = this.formatDate(children.datetime);
+            let date = this.formatDate(children.datetime);
 
             return (
-                <ChildCommentCard childComment={children} key={children.id} day={day}
-                                  time={time}/>
+                <ChildCommentCard childComment={children} key={children.id}
+                                  date={date}/>
             )
                 ;
         });
         return (
-            <Row style={{paddingLeft:'35'}}>
+            <Row style={{paddingLeft:35}}>
                 <ListView aveCellHeight={100}>
                     {childList}
                 </ListView>

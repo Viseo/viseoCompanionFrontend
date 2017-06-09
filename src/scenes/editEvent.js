@@ -493,6 +493,7 @@ export default class EditEvent extends Component {
         let descriptionInput = this.renderDescriptionInput();
         let categoryInput = this.renderCategoryInput();
         let ketWordsInput = this.renderKeyWordsInput();
+
         let participants = this.state.participants.map(participant => {
             let participantName = participant.firstName ?
                 participant.firstName + ' ' + participant.lastName :
