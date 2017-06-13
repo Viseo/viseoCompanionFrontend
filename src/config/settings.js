@@ -9,7 +9,7 @@
     //let SERVER_API_URL = 'http://10.33.178.149:8080/api/';
 
 // LEO
- let SERVER_API_URL = 'http://10.33.178.149:8080/'
+ let SERVER_API_URL = 'http://10.33.179.15:8080/'
   //  let SERVER_API_URL = 'http://192.168.43.29:8080/'
 
 // AWS Dev server

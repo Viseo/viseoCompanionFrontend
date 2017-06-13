@@ -25,17 +25,19 @@ export default class CommentCard extends Component {
     render() {
         const {comment, day, time} = this.props;
         const replyBlock = this.state.showReply ? this.renderReply(comment) : null;
-
-        const childCommentList = this.props.comment.children.length>0 ? this.renderChildComments(comment.children) : null
+        const childCommentList = this.props.comment.children.length > 0
+            ? this.renderChildComments(comment.children) : null;
         return (
             <div>
                 <ListViewItem height={100} key={comment.id}>
                     <Row >
-                        <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
+                        <Row style={{borderTop: '1px  solid rgb(200,200,200)', margin: 5}}>
                             <Col md="6" style={{textAlign: 'left'}}>
-                                <Row style={{color: 'darkred', fontWeight: 'bold'}}>{comment.writer.firstName}</Row>
+                                <Row style={{color: 'darkred', fontWeight: 'bold'}}>
+                                    {comment.writer.firstName + ' ' + comment.writer.lastName}
+                                </Row>
                             </Col>
-                            <Col md="6" className="time" style={{marginTop: 8, textAlign: 'right'}}>
+                            <Col md="6" className="time" style={{textAlign: 'right'}}>
                                 <FaClockO style={{fontSize: 16}}/> {day} {time}
                             </Col>
                         </Row>
@@ -92,7 +94,6 @@ export default class CommentCard extends Component {
         )
     }
 
-
     setContent = (event) => {
 
         let inputValue = event.target.value;
@@ -100,7 +101,6 @@ export default class CommentCard extends Component {
             content: inputValue
         })
     }
-
 
     sendReply(id) {
 
@@ -112,13 +112,12 @@ export default class CommentCard extends Component {
             },
             eventId: this.props.eventId,
         };
-        db.addComment(childComment,id);
+        db.addComment(childComment, id);
         this.setState({
             showReply: false
         })
         window.location.reload();
     }
-
 
     formatDate(date) {
         if (!date)
@@ -174,7 +173,7 @@ export default class CommentCard extends Component {
                 ;
         });
         return (
-            <Row style={{paddingLeft:35}}>
+            <Row style={{paddingLeft: 35}}>
                 <ListView aveCellHeight={100}>
                     {childList}
                 </ListView>

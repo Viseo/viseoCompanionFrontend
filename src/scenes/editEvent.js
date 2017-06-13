@@ -247,7 +247,8 @@ export default class EditEvent extends Component {
             });
         } else if (!isNameValid) {
             this.setState({
-                errorName: 'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !',
+                errorName:
+                    'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !',
             });
         } else {
             this.setState({
