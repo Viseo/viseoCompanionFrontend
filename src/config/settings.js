@@ -18,12 +18,12 @@
 const restRoutes = {
     addEvent: SERVER_API_URL + 'events',
     getEvent: SERVER_API_URL + 'events/',
-    editEvent: SERVER_API_URL + 'events/',
+    editEvent: SERVER_API_URL + 'events',
     getEvents: SERVER_API_URL + 'events/',
     authenticate: SERVER_API_URL + 'authenticate',
     updatedComment: SERVER_API_URL + 'comments',
     changePassword: SERVER_API_URL + 'changePassword',
-    updatedComment:SERVER_API_URL +  'comments/',
+    uploadImage: SERVER_API_URL + 'upload',
     deleteEvent: eventId => (SERVER_API_URL + 'events/' + eventId),
     addChildComment: (commentId) => {
         return SERVER_API_URL + 'comments/'+commentId;

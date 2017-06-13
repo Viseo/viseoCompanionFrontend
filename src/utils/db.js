@@ -5,46 +5,73 @@
 import settings from '../config/settings';
 import User from './user';
 
-async function addEvent(event) {
+async function addEvent(event, imageFile) {
     try {
-        let response = await fetch(settings.api.addEvent + '?host=1', {
+        var formData = new FormData();
+
+        formData.append('file', imageFile);
+
+        let responseImage = await fetch(settings.api.uploadImage, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                'name': event.name,
-                'datetime': event.date,
-                'description': event.description,
-                'keyWords': event.keyWords,
-                'place': event.location,
-                'category': event.category,
-            }),
+            body: formData
         });
-        return (await response.status === 200);
+
+        let imageUri = await responseImage.text();
+        if (await responseImage.status === 200) {
+            let response = await fetch(settings.api.addEvent + '?host=1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "name": event.name,
+                    "datetime": event.date,
+                    "description": event.description,
+                    "keyWords": event.keyWords,
+                    "place": event.location,
+                    "category": event.category,
+                    "imageUrl": imageUri
+                })
+            });
+        }
+        return await responseImage.status === 200;
     } catch (error) {
         console.warn('db::addEvent ' + error);
     }
 }
 
-async function EditEvent(event) {
+
+async function EditEvent(event, imageFile) {
     try {
-        let response = await fetch(settings.api.editEvent, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                'id': event.id,
-                'name': event.name,
-                'datetime': event.datetime,
-                'description': event.description,
-                'keyWords': event.keyWords,
-                'place': event.location,
-                'category': event.category,
-            }),
+        console.warn(settings.api.uploadImage)
+        var formData = new FormData();
+        formData.append('file', imageFile);
+        let responseImage = await fetch(settings.api.uploadImage, {
+            method: 'POST',
+            body: formData
         });
-        return (await response.status === 200);
+        let imageUri = await responseImage.text();
+
+        if (responseImage.status === 200) {
+            let response = await fetch(settings.api.editEvent, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'id': event.id,
+                    'category': event.category,
+                    'version':event.version,
+                    'name': event.name,
+                    'datetime': event.datetime,
+                    'description': event.description,
+                    'keyWords': event.keyWords,
+                    'place': event.location,
+                    "imageUrl": imageUri
+                }),
+            });
+            return (response.status === 200);
+        }
     } catch (error) {
         console.warn('db::editEvent ' + error);
     }
@@ -89,7 +116,7 @@ async function authenticateAdmin(email, password) {
     return null;
 }
 
-async function getComments (idEvent){
+async function getComments(idEvent) {
     try {
         // Fetch  comments By Event
         let commentsResponse = await fetch(settings.api.getAllCommentsByEvent(idEvent));
@@ -149,7 +176,7 @@ async function updateComment(comment) {
     }
 }
 
-export async function addComment(childComment,id) {
+export async function addComment(childComment, id) {
     try {
 
         await fetch(settings.api.addChildComment(id), {

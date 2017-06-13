@@ -17,16 +17,17 @@ export default class CommentCard extends Component {
 
         this.state = {
             showReply: false,
-            content: ''
+            content: '',
+            errorMessage: ''
         };
 
     }
 
     render() {
-        const {comment, day, time} = this.props;
+        const {comment, dateTime} = this.props;
         const replyBlock = this.state.showReply ? this.renderReply(comment) : null;
 
-        const childCommentList = this.props.comment.children.length>0 ? this.renderChildComments(comment.children) : null
+        const childCommentList = this.props.comment.children.length > 0 ? this.renderChildComments(comment.children) : null
         return (
             <div>
                 <ListViewItem height={100} key={comment.id}>
@@ -36,7 +37,7 @@ export default class CommentCard extends Component {
                                 <Row style={{color: 'darkred', fontWeight: 'bold'}}>{comment.writer.firstName}</Row>
                             </Col>
                             <Col md="6" className="time" style={{marginTop: 8, textAlign: 'right'}}>
-                                <FaClockO style={{fontSize: 16}}/> {day} {time}
+                                <FaClockO style={{fontSize: 16}}/> {dateTime}
                             </Col>
                         </Row>
                         <Row>
@@ -76,8 +77,9 @@ export default class CommentCard extends Component {
                             </Button>
 
                         </Row>
-                        {childCommentList}
                         {replyBlock}
+                        {childCommentList}
+
                     </Row>
                 </ListViewItem>
             </div>
@@ -103,26 +105,34 @@ export default class CommentCard extends Component {
 
 
     sendReply(id) {
-
-        const childComment = {
-            content: this.state.content,
-            datetime: moment().valueOf(),
-            writer: {
-                id: 1,
-            },
-            eventId: this.props.eventId,
-        };
-        db.addComment(childComment,id);
-        this.setState({
-            showReply: false
+        if (this.state.content === "") {
+            this.setState({
+                errorMessage : "Veuillez entrer un commentaire !"
         })
-        window.location.reload();
+
+        }
+        else {
+            const childComment = {
+                content: this.state.content,
+                datetime: moment().valueOf(),
+                writer: {
+                    id: 1,
+                },
+                eventId: this.props.eventId,
+            };
+            db.addComment(childComment, id);
+            this.setState({
+                showReply: false
+            })
+            window.location.reload();
+        }
+
     }
 
 
     formatDate(date) {
         if (!date)
-            return [];
+            return '';
         let dateTime = moment(date);
         return dateTime.format(' Do MMMM à HH:MM');
 
@@ -174,7 +184,7 @@ export default class CommentCard extends Component {
                 ;
         });
         return (
-            <Row style={{paddingLeft:35}}>
+            <Row style={{paddingLeft: 35}}>
                 <ListView aveCellHeight={100}>
                     {childList}
                 </ListView>
@@ -183,6 +193,7 @@ export default class CommentCard extends Component {
     }
 
     renderReply(comment) {
+
         return (
             <Row>
                 <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
@@ -194,8 +205,22 @@ export default class CommentCard extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <textarea style={{width: '100%', marginTop: 12, color: '#0D47A1'}} rows={8}
-                              onChange={this.setContent}/>
+                    <Col md="12">
+                        <textarea style={{width: '100%', marginTop: 12, color: '#0D47A1'}} rows={8}
+                                  onChange={this.setContent}/>
+                    </Col>
+
+                    { this.state.errorMessage==="" ? null : <Col md="12" style={{
+                        color: '#a94442', padding: 6,
+                        backgroundColor: '#f2dede',
+                        border: '1px solid #ebccd1',
+                        borderRadius: 4,
+                        margin: '0px 3px 0px 14px',
+                        width: '95%'
+                    }} >
+                        {this.state.errorMessage}
+                    </Col> }
+
                 </Row>
                 <Row>
                     <Button
