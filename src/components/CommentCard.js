@@ -10,6 +10,8 @@ import moment from "moment";
 import ChildCommentCard from "./ChildCommentCard";
 import {ListView}  from 'react-scrollable-list-view';
 import db from "../utils/db";
+import UserAvatar from "react-user-avatar";
+import profileDetails from "../scenes/profileDetails";
 
 export default class CommentCard extends Component {
     constructor(props) {
@@ -30,14 +32,24 @@ export default class CommentCard extends Component {
         return (
             <div>
                 <ListViewItem height={100} key={comment.id}>
-                    <Row >
+                    <Row>
                         <Row style={{borderTop: '1px  solid rgb(200,200,200)', margin: 5}}>
-                            <Col md="6" style={{textAlign: 'left'}}>
-                                <Row style={{color: 'darkred', fontWeight: 'bold'}}>
+                            <Col md="6" style={{marginRight: -180, marginTop: 10}}>
+                                {/*onPress={() => this.props.history.push('/profileDetails', profileDetails)}*/}
+                                <UserAvatar style={{color: "white"}}
+                                            name={comment.writer.firstName + ' ' + comment.writer.lastName}
+                                            size="40"
+                                            color="#0174DF">
+                                    // TODO onClick()
+
+                                </UserAvatar>
+                            </Col>
+                            <Col md="6" style={{textAlign: 'left', marginTop: 20}}>
+                                <Row style={{color: "#0174DF", fontWeight: 'bold'}}>
                                     {comment.writer.firstName + ' ' + comment.writer.lastName}
                                 </Row>
                             </Col>
-                            <Col md="6" className="time" style={{textAlign: 'right'}}>
+                            <Col md="6" className="time" style={{textAlign: 'right', marginLeft: 170, marginTop: -20}}>
                                 <FaClockO style={{fontSize: 16}}/> {day} {time}
                             </Col>
                         </Row>
@@ -193,8 +205,8 @@ export default class CommentCard extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <textarea style={{width: '100%', marginTop: 12, color: '#0D47A1'}} rows={8}
-                              onChange={this.setContent}/>
+        <textarea style={{width: '100%', marginTop: 12, color: '#0D47A1'}} rows={8}
+                  onChange={this.setContent}/>
                 </Row>
                 <Row>
                     <Button
