@@ -29,7 +29,7 @@ export default class CommentCard extends Component {
         const childCommentList = this.props.comment.children.length>0 ? this.renderChildComments(comment.children) : null
         return (
             <div>
-                <ListViewItem height={100} key={comment.id}>
+                <ListViewItem height={100} key={comment.id} >
                     <Row >
                         <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
                             <Col md="6" style={{textAlign: 'left'}}>

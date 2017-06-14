@@ -102,7 +102,6 @@ async function getComments (idEvent){
                 comments.push({
                     id: comment.id,
                     version: comment.version,
-                    content: comment.content,
                     date: comment.datetime,
                     writer: comment.writer,
                     eventId: comment.eventId,
