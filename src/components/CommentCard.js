@@ -11,17 +11,17 @@ import ChildCommentCard from "./ChildCommentCard";
 import {ListView}  from 'react-scrollable-list-view';
 import db from "../utils/db";
 import UserAvatar from "react-user-avatar";
-import profileDetails from "../scenes/profileDetails";
+import ProfileDetails from "../scenes/ProfileDetails";
 
 export default class CommentCard extends Component {
+
     constructor(props) {
         super(props);
 
         this.state = {
             showReply: false,
-            content: ''
+            content: '',
         };
-
     }
 
     render() {
@@ -35,17 +35,17 @@ export default class CommentCard extends Component {
                     <Row>
                         <Row style={{borderTop: '1px  solid rgb(200,200,200)', margin: 5}}>
                             <Col md="6" style={{marginRight: -180, marginTop: 10}}>
-                                {/*onPress={() => this.props.history.push('/profileDetails', profileDetails)}*/}
                                 <UserAvatar style={{color: "white"}}
                                             name={comment.writer.firstName + ' ' + comment.writer.lastName}
                                             size="40"
-                                            color="#0174DF">
-                                    // TODO onClick()
-
+                                            color="#0174DF"
+                                            onClick={() => this.props.history.push('/profileDetails', ProfileDetails)}>
                                 </UserAvatar>
                             </Col>
                             <Col md="6" style={{textAlign: 'left', marginTop: 20}}>
-                                <Row style={{color: "#0174DF", fontWeight: 'bold'}}>
+                                <Row
+                                    style={{color: "#0174DF", fontWeight: 'bold'}}
+                                    onClick={() => this.props.history.push('/profileDetails', ProfileDetails)}>
                                     {comment.writer.firstName + ' ' + comment.writer.lastName}
                                 </Row>
                             </Col>
@@ -82,7 +82,6 @@ export default class CommentCard extends Component {
                             <Button
                                 variant="flat"
                                 onClick={() => this.onPressReply()}
-
                             >
                                 <FaMailReply style={{fontSize: 16, marginRight: 5, color: '#558B2F'}}
                                 />

@@ -7,7 +7,7 @@ import SignIn from "./signIn";
 import db from "../utils/db";
 import Home from "./home";
 import ResetPassword from "./ResetPassword";
-import profileDetails from "./profileDetails";
+import ProfileDetails from "./ProfileDetails";
 
 class App extends Component {
     //TODO: first page should be the signIn form
@@ -24,7 +24,7 @@ class App extends Component {
                         <Route path="/add" component={AddEvent}/>
                         <Route path="/edit/:id" component={EditEvent} event={event}/>
                         <Route path="/resetPassword" component={ResetPassword}/>
-                        <Route path="/profileDetails" component={profileDetails}/>
+                        <Route path="/profileDetails" component={ProfileDetails}/>
                     </div>
                 </Router>
             </div>

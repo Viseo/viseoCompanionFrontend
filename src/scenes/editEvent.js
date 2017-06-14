@@ -47,7 +47,8 @@ export default class EditEvent extends Component {
             participants: [],
             comments: [],
             modalVisible: false,
-            display: 'none'
+            display: 'none',
+            history: this.props.history,
 
         };
         this.loadComment();
