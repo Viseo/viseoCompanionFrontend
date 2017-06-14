@@ -7,18 +7,16 @@ import * as util from '../utils/util';
 import HorizontalToggleBar from '../components/horizontalToggleBar';
 import categories from '../utils/eventCategories';
 import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react';
-import settings from '../config/settings'; //https://www.muicss.com/docs/v1/react;
+import settings from '../config/settings';
 import Modal from 'react-modal';
 import {ListView}  from 'react-scrollable-list-view';
 import {ListViewItem}  from 'react-scrollable-list-view';
-import FaClockO from 'react-icons/lib/fa/clock-o';
-import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
-import FaTimesCircle from 'react-icons/lib/fa/times-circle';
-import FaMailReply from 'react-icons/lib/fa/mail-reply';
 import db from '../utils/db';
 import CommentCard from "../components/CommentCard";
 import moment from "moment"
 import 'moment/locale/fr';
+import FaDownload from 'react-icons/lib/fa/download';
+import FileUpload from "react-fileupload";
 
 export default class EditEvent extends Component {
     constructor(props) {
@@ -33,6 +31,7 @@ export default class EditEvent extends Component {
             errorLocation: '',
             isLocationRequired: false,
             hours: [],
+            version:0,
             time: '',
             isTimeSet: false,
             timeStyle: 'select_notVisited',
@@ -47,7 +46,9 @@ export default class EditEvent extends Component {
             participants: [],
             comments: [],
             modalVisible: false,
-            display: 'none'
+            display: 'none',
+            imageName: '',
+            imageFile: null
 
         };
         this.loadComment();
@@ -58,6 +59,144 @@ export default class EditEvent extends Component {
     componentWillMount() {
         this._setLanguage();
     }
+
+    render() {
+        let nameInput = this.renderNameInput();
+        let dateInput = this.renderDateInput();
+        let timeInput = this.renderTimeInput();
+        let locationInput = this.renderLocationInput();
+        let descriptionInput = this.renderDescriptionInput();
+        let categoryInput = this.renderCategoryInput();
+        let ketWordsInput = this.renderKeyWordsInput();
+        let imageUpload = this.renderImageUpload();
+        let participants = this.state.participants.map(participant => {
+            let participantName = participant.firstName ?
+                participant.firstName + ' ' + participant.lastName :
+                participant.email;
+            return (
+                <Row key={participant.id}>
+                    {participantName}
+                </Row>
+            );
+        });
+        let commentsList = this.state.comments.map(comment => {
+            let dateTime = this.formatDate(comment.date);
+
+            return (
+                <CommentCard comment={comment} key={comment.id} dateTime={dateTime} eventId={this.state.id}/>
+            )
+                ;
+        });
+        let modal = this.renderModal();
+
+        return (
+            <div className="new-event-form">
+                {modal}
+                <h1>Modifier Evènement</h1>
+                <div className="form" style={{width: '100%'}}>
+                    <Container style={{display: 'inline-block', width: '50%', padding: 30}}>
+                        <Row>
+                            {nameInput}
+                        </Row>
+                        <Row>
+                            <Col md="8">
+                                {dateInput}
+                            </Col>
+                            <Col md="4">
+                                {timeInput}
+                            </Col>
+                        </Row>
+                        <Row>
+                            {locationInput}
+                        </Row>
+                        <Row>
+                            {descriptionInput}
+                        </Row>
+                        <Row style={{justifyContent: 'center', marginLeft: 0}}>
+                            {categoryInput}
+                        </Row>
+                        <Row>
+                            {ketWordsInput}
+                        </Row>
+                        <Row>
+                            {imageUpload}
+                        </Row>
+                        <Row>
+                            <div className="error errorForm">{this.state.errorType}</div>
+                            <div
+                                className="success"
+                                ref={(success) => {
+                                    this.success = success;
+                                }}
+                            >Evènement modifié !
+                            </div>
+                        </Row>
+                        <Row>
+                            <Button
+                                variant="flat"
+                                color="primary"
+                                className="submitButton"
+                                onClick={this.onPressSendEditEvent}
+                            >
+                                Modifier
+                            </Button>
+                            <Button
+                                variant="flat"
+                                color="danger"
+                                className="deleteButton"
+                                onClick={this.onPressSendDeleteEvent}
+                            >
+                                Supprimer
+                            </Button>
+                        </Row>
+                    </Container>
+                    <Container style={{
+                        display: 'inline-block',
+                        verticalAlign: 'top',
+                        width: '50%',
+                        minHeight: '50%',
+                        padding: 50,
+                    }}>
+                        <Container style={{
+                            verticalAlign: 'top',
+                            width: '80%',
+                            minHeight: '50%',
+                            overflowY: 'scroll',
+                            marginLeft: 50,
+                            borderWidth: 1,
+                            borderStyle: 'solid',
+                            borderColor: '#000',
+                            marginBottom: 10,
+
+                        }}>
+                            <Row>
+                                <h3>Participants</h3>
+                            </Row>
+                            {participants}
+                        </Container>
+                        <Container style={{
+                            verticalAlign: 'bottom',
+                            minHeight: '50%',
+                            marginLeft: 50,
+                            borderWidth: 1,
+                            borderStyle: 'solid',
+                            borderColor: '#000',
+                            width: '80%',
+                        }}>
+                            <Row>
+                                <h3>Commentaires</h3>
+                                <ListView aveCellHeight={100}>
+                                    {commentsList}
+                                </ListView>
+                            </Row>
+                        </Container >
+                    </Container>
+
+                </div>
+            </div>
+        );
+    }
+
     _setLanguage() {
         moment.locale('fr');
     }
@@ -75,6 +214,8 @@ export default class EditEvent extends Component {
             isDateSet: true,
             time: datetime.format('HH:mm'),
             isTimeSet: true,
+            version:event.version,
+            imageName:event.imageUrl,
         });
     };
 
@@ -172,12 +313,14 @@ export default class EditEvent extends Component {
                 name: state.name,
                 description: state.description,
                 datetime,
+                version:state.version,
                 location: state.location,
                 keyWords: state.keyWords,
                 category: state.categoryId,
-
             };
-            if (await db.EditEvent(newEvent)) {
+            if (await db.EditEvent(newEvent, this.state.imageFile)) {
+                this.emptyFields();
+                this.displaySuccessMessage();
                 this.props.history.push('/home');
             } else {
                 this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
@@ -480,142 +623,37 @@ export default class EditEvent extends Component {
 
     formatDate(date) {
         if (!date)
-            return [];
+            return '';
         let dateTime = moment(date);
-        return dateTime.calendar().split('/');
+        return dateTime.format(' Do MMMM à HH:MM');
     }
 
-    render() {
-        let nameInput = this.renderNameInput();
-        let dateInput = this.renderDateInput();
-        let timeInput = this.renderTimeInput();
-        let locationInput = this.renderLocationInput();
-        let descriptionInput = this.renderDescriptionInput();
-        let categoryInput = this.renderCategoryInput();
-        let ketWordsInput = this.renderKeyWordsInput();
-
-        let participants = this.state.participants.map(participant => {
-            let participantName = participant.firstName ?
-                participant.firstName + ' ' + participant.lastName :
-                participant.email;
-            return (
-                <Row key={participant.id}>
-                    {participantName}
-                </Row>
-            );
-        });
-        let commentsList = this.state.comments.map(comment => {
-            let [day, time] = this.formatDate(comment.date);
-
-            return (
-                <CommentCard comment={comment} key={comment.id} day={day} time={time} eventId={this.state.id}/>
-            )
-                ;
-        });
-        let modal = this.renderModal();
-
+    renderImageUpload() {
+        const options = {
+            baseUrl: '/add',
+            accept: 'image/*',
+            numberLimit: 1,
+            chooseAndUpload: false,
+            chooseFile: (files) => {
+                // console.log('you choose',typeof files == 'string' ? files : files[0].name)
+                this.setState({
+                    imageName: files[0].name,
+                    imageFile: files[0]
+                })
+            },
+        }
         return (
-            <div className="new-event-form">
-                {modal}
-                <h1>Modifier Evènement</h1>
-                <div className="form" style={{width: '100%'}}>
-                    <Container style={{display: 'inline-block', width: '50%', padding: 30}}>
-                        <Row>
-                            {nameInput}
-                        </Row>
-                        <Row>
-                            <Col md="8">
-                                {dateInput}
-                            </Col>
-                            <Col md="4">
-                                {timeInput}
-                            </Col>
-                        </Row>
-                        <Row>
-                            {locationInput}
-                        </Row>
-                        <Row>
-                            {descriptionInput}
-                        </Row>
-                        <Row style={{justifyContent: 'center', marginLeft: 0}}>
-                            {categoryInput}
-                        </Row>
-                        <Row>
-                            {ketWordsInput}
-                        </Row>
-                        <Row>
-                            <div className="error errorForm">{this.state.errorType}</div>
-                            <div
-                                className="success"
-                                ref={(success) => {
-                                    this.success = success;
-                                }}
-                            >Evènement ajouté !
-                            </div>
-                        </Row>
-                        <Row>
-                            <Button
-                                variant="flat"
-                                color="primary"
-                                className="submitButton"
-                                onClick={this.onPressSendEditEvent}
-                            >
-                                Modifier
-                            </Button>
-                            <Button
-                                variant="flat"
-                                color="danger"
-                                className="deleteButton"
-                                onClick={this.onPressSendDeleteEvent}
-                            >
-                                Supprimer
-                            </Button>
-                        </Row>
-                    </Container>
-                    <Container style={{
-                        display: 'inline-block',
-                        verticalAlign: 'top',
-                        width: '50%',
-                        minHeight: '50%',
-                        padding: 50,
-                    }}>
-                        <Container style={{
-                            verticalAlign: 'top',
-                            width: '80%',
-                            minHeight: '50%',
-                            overflowY: 'scroll',
-                            marginLeft: 50,
-                            borderWidth: 1,
-                            borderStyle: 'solid',
-                            borderColor: '#000',
-                            marginBottom: 10,
-
-                        }}>
-                            <Row>
-                                <h3>Participants</h3>
-                            </Row>
-                            {participants}
-                        </Container>
-                        <Container style={{
-                            verticalAlign: 'bottom',
-                            minHeight: '50%',
-                            marginLeft: 50,
-                            borderWidth: 1,
-                            borderStyle: 'solid',
-                            borderColor: '#000',
-                            width: '80%',
-                        }}>
-                            <Row>
-                                <h3>Commentaires</h3>
-                                <ListView aveCellHeight={100}>
-                                    {commentsList}
-                                </ListView>
-                            </Row>
-                        </Container>
-                    </Container>
-
+            <FileUpload
+                options={options}
+                ref="fileUpload"
+            >
+                <p>{this.state.imageName}</p>
+                <div ref="chooseBtn">
+                    <FaDownload />
+                    <span> Ajouter une image</span>
                 </div>
-            </div>
+            </FileUpload>
+
         );
     }
 };

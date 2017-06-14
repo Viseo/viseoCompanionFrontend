@@ -428,7 +428,6 @@ export default class AddEvent extends Component {
                             {ketWordsInput}
                         </Row>
                         <Row>
-
                             {imageUpload}
                         </Row>
                         <Row>
