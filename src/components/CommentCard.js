@@ -11,7 +11,7 @@ import ChildCommentCard from "./ChildCommentCard";
 import {ListView}  from 'react-scrollable-list-view';
 import db from "../utils/db";
 import UserAvatar from "react-user-avatar";
-import ProfileDetails from "../scenes/ProfileDetails";
+import UserProfile from "../scenes/UserProfile";
 
 export default class CommentCard extends Component {
 
@@ -35,17 +35,19 @@ export default class CommentCard extends Component {
                     <Row>
                         <Row style={{borderTop: '1px  solid rgb(200,200,200)', margin: 5}}>
                             <Col md="6" style={{marginRight: -180, marginTop: 10}}>
-                                <UserAvatar style={{color: "white"}}
-                                            name={comment.writer.firstName + ' ' + comment.writer.lastName}
-                                            size="40"
-                                            color="#0174DF"
-                                            onClick={() => this.props.history.push('/profileDetails', ProfileDetails)}>
-                                </UserAvatar>
+                                <div
+                                    onClick={() => this._goToUserProfile()}>
+                                    <UserAvatar style={{color: "white"}}
+                                                name={comment.writer.firstName + ' ' + comment.writer.lastName}
+                                                size="40"
+                                                color="#0174DF"
+                                    />
+                                </div>
                             </Col>
                             <Col md="6" style={{textAlign: 'left', marginTop: 20}}>
                                 <Row
                                     style={{color: "#0174DF", fontWeight: 'bold'}}
-                                    onClick={() => this.props.history.push('/profileDetails', ProfileDetails)}>
+                                    onClick={() => this._goToUserProfile()}>
                                     {comment.writer.firstName + ' ' + comment.writer.lastName}
                                 </Row>
                             </Col>
@@ -95,6 +97,13 @@ export default class CommentCard extends Component {
                 </ListViewItem>
             </div>
         )
+
+    }
+
+    _goToUserProfile() {
+        this.props.history.push('/userProfile', {
+            ...this.props.comment.writer,
+        })
 
     }
 

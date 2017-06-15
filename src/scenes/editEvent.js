@@ -510,7 +510,14 @@ export default class EditEvent extends Component {
             let [day, time] = this.formatDate(comment.date);
 
             return (
-                <CommentCard comment={comment} key={comment.id} day={day} time={time} eventId={this.state.id}/>
+                <CommentCard
+                    comment={comment}
+                    key={comment.id}
+                    day={day}
+                    time={time}
+                    eventId={this.state.id}
+                    history={this.props.history}
+                />
             )
                 ;
         });
