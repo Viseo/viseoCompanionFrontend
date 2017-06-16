@@ -6,6 +6,8 @@ import {FaEdit} from 'react-icons/lib/fa/index';
 import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
 import FaTimesCircle from 'react-icons/lib/fa/times-circle';
 import db from '../utils/db';
+import UserAvatar from "react-user-avatar";
+
 export default class ChildCommentCard extends Component {
     constructor(props) {
         super(props);
@@ -40,7 +42,6 @@ export default class ChildCommentCard extends Component {
                         }}
                         ><FaEdit /> Modifier</Button>
                     </Col>
-
                 </Row>
             ) :
             (<Row>
@@ -71,13 +72,24 @@ export default class ChildCommentCard extends Component {
         return (
             <div>
                 <ListViewItem height={100} key={childComment.id}>
-                    <Row >
-                        <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
-                            <Col md="6" style={{textAlign: 'left'}}>
-                                <Row style={{
-                                    color: 'darkred',
-                                    fontWeight: 'bold',
-                                }}>{childComment.writer.firstName}</Row>
+                    <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
+                        <Row >
+                            <Col md="6" style={{marginRight: -180, marginTop: 10}}>
+                                <div
+                                    onClick={() => this._goToUserProfile()}>
+                                    <UserAvatar style={{color: "white"}}
+                                                name={childComment.writer.firstName + ' ' + childComment.writer.lastName}
+                                                size="40"
+                                                color="#0174DF"
+                                    />
+                                </div>
+                            </Col>
+                            <Col md="6" style={{textAlign: 'left', marginTop: 20}}>
+                                <Row
+                                    style={{color: "#0174DF", fontWeight: 'bold'}}
+                                    onClick={() => this._goToUserProfile()}>
+                                    {childComment.writer.firstName + ' ' + childComment.writer.lastName}
+                                </Row>
                             </Col>
                             <Col md="6" className="time" style={{marginTop: 8, textAlign: 'right'}}>
                                 <FaClockO style={{fontSize: 16}}/> {date}
@@ -95,6 +107,13 @@ export default class ChildCommentCard extends Component {
                 </ListViewItem>
             </div>
         );
+
+    }
+
+    _goToUserProfile() {
+        this.props.history.push('/userProfile', {
+            ...this.props.childComment.writer,
+        })
 
     }
 

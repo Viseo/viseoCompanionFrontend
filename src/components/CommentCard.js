@@ -34,7 +34,7 @@ export default class CommentCard extends Component {
             <div>
                 <ListViewItem height={100} key={comment.id} >
                     <Row >
-                        <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
+                        <Row >
                             <Col md="6" style={{marginRight: -180, marginTop: 10}}>
                                 <div
                                     onClick={() => this._goToUserProfile()}>
@@ -61,7 +61,7 @@ export default class CommentCard extends Component {
                                 {comment.content}
                             </Col>
                         </Row>
-                        <Row>
+                        <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
                             <Button
                                 disabled={comment.publish}
                                 variant="flat"
@@ -194,10 +194,12 @@ export default class CommentCard extends Component {
             let date = this.formatDate(children.datetime);
 
             return (
-                <ChildCommentCard childComment={children} key={children.id}
-                                  date={date}/>
-            )
-                ;
+                <ChildCommentCard childComment={children}
+                                  key={children.id}
+                                  date={date}
+                                  history={this.props.history}
+                />
+            );
         });
         return (
             <Row style={{paddingLeft: 35}}>

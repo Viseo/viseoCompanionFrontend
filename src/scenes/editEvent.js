@@ -9,14 +9,13 @@ import categories from '../utils/eventCategories';
 import {Button, Col, Container, Input, Option, Row, Textarea} from 'muicss/react';
 import settings from '../config/settings';
 import Modal from 'react-modal';
-import {ListView}  from 'react-scrollable-list-view';
-import {ListViewItem}  from 'react-scrollable-list-view';
+import {ListView, ListViewItem} from 'react-scrollable-list-view';
 import db from '../utils/db';
-import CommentCard from "../components/CommentCard";
-import moment from "moment"
+import CommentCard from '../components/CommentCard';
+import moment from 'moment';
 import 'moment/locale/fr';
 import FaDownload from 'react-icons/lib/fa/download';
-import FileUpload from "react-fileupload";
+import FileUpload from 'react-fileupload';
 
 export default class EditEvent extends Component {
     constructor(props) {
@@ -31,7 +30,7 @@ export default class EditEvent extends Component {
             errorLocation: '',
             isLocationRequired: false,
             hours: [],
-            version:0,
+            version: 0,
             time: '',
             isTimeSet: false,
             timeStyle: 'select_notVisited',
@@ -49,7 +48,7 @@ export default class EditEvent extends Component {
             display: 'none',
             imageName: '',
             history: this.props.history,
-            imageFile: null
+            imageFile: null,
 
         };
         this.loadComment();
@@ -81,12 +80,15 @@ export default class EditEvent extends Component {
             );
         });
         let commentsList = this.state.comments.map(comment => {
-            let dateTime = this.formatDate(comment.date);
+            let dateTime = this.formatDate(comment.datetime);
 
             return (
-                <CommentCard comment={comment} key={comment.id} dateTime={dateTime} eventId={this.state.id}/>
-            )
-                ;
+                <CommentCard comment={comment}
+                             key={comment.id}
+                             dateTime={dateTime}
+                             eventId={this.state.id}
+                             history={this.props.history}/>
+            );
         });
         let modal = this.renderModal();
 
@@ -215,8 +217,8 @@ export default class EditEvent extends Component {
             isDateSet: true,
             time: datetime.format('HH:mm'),
             isTimeSet: true,
-            version:event.version,
-            imageName:event.imageUrl,
+            version: event.version,
+            imageName: event.imageUrl,
         });
     };
 
@@ -314,7 +316,7 @@ export default class EditEvent extends Component {
                 name: state.name,
                 description: state.description,
                 datetime,
-                version:state.version,
+                version: state.version,
                 location: state.location,
                 keyWords: state.keyWords,
                 category: state.categoryId,
@@ -639,10 +641,10 @@ export default class EditEvent extends Component {
                 // console.log('you choose',typeof files == 'string' ? files : files[0].name)
                 this.setState({
                     imageName: files[0].name,
-                    imageFile: files[0]
-                })
+                    imageFile: files[0],
+                });
             },
-        }
+        };
         return (
             <FileUpload
                 options={options}

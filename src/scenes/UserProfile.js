@@ -3,7 +3,7 @@
  */
 
 import React, {Component} from 'react';
-import {Button, Col, Input, Row} from "muicss/react";
+import {Button, Input, Row} from 'muicss/react';
 import Modal from 'react-modal';
 
 export default class UserProfile extends Component {
@@ -13,14 +13,14 @@ export default class UserProfile extends Component {
         this.state = {
             ...this.props.history.location.state,
             modalVisible: false,
-        }
+        };
     }
 
     render() {
         return (
             <div className="user-profile-form" style={{textAlign: 'center'}}>
                 <h1>Détails du profil</h1>
-                <div className="form" style={{width: 200, textAlign: "left", marginHorizontal: 'auto'}}>
+                <div className="form" style={{width: 200, textAlign: 'left', marginHorizontal: 'auto'}}>
                     <Row>{this.renderUserFirstName()}</Row>
                     <Row>{this.renderUserLastName()}</Row>
                     <Row>{this.renderUserMail()}</Row>
@@ -41,8 +41,8 @@ export default class UserProfile extends Component {
                 value={this.state.firstName}
                 floatingLabel={true}
                 onChange={(firstName) => this.setState({firstName})}
-                onClick={""}
-                required={""}
+                onClick={''}
+                required={''}
             />
         );
     }
@@ -78,7 +78,7 @@ export default class UserProfile extends Component {
         const birthdayDefined = this.state.birthday || false;
         return (
             <Input
-                type={birthdayDefined ? "date" : ''}
+                type={birthdayDefined ? 'date' : ''}
                 name="birthday"
                 label="Date de naissance"
                 className="birthDayInput"
@@ -96,7 +96,7 @@ export default class UserProfile extends Component {
                     variant="flat"
                     color="primary"
                     className="submitButton"
-                    onClick={""}
+                    onClick={''}
                 >
                     Modifier
                 </Button>
@@ -139,7 +139,7 @@ export default class UserProfile extends Component {
                         <Button
                             variant="flat"
                             color="danger"
-                            onClick={""}
+                            onClick={''}
                         >
                             Confirmer
                         </Button>
@@ -159,8 +159,8 @@ export default class UserProfile extends Component {
     }
 }
 UserProfile.defaultProps = {
-    birthday: '2016-01-01'
-}
+    birthday: '2016-01-01',
+};
 const modalStyle = {
     overlay: {
         position: 'fixed',
