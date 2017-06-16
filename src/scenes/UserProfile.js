@@ -18,14 +18,14 @@ export default class UserProfile extends Component {
 
     render() {
         return (
-            <div className="user-profile-form">
+            <div className="user-profile-form" style={{textAlign: 'center'}}>
                 <h1>Détails du profil</h1>
-                <div className="form" style={{width: '100%'}}>
+                <div className="form" style={{width: 200, textAlign: "left", marginHorizontal: 'auto'}}>
                     <Row>{this.renderUserFirstName()}</Row>
                     <Row>{this.renderUserLastName()}</Row>
                     <Row>{this.renderUserMail()}</Row>
-                    <Row>{this.renderBirthDay()}</Row>
-                    <Row>{this.renderFormButtons()}</Row>
+                    <Row>{this.renderBirthday()}</Row>
+                    {/*<Row>{this.renderFormButtons()}</Row>*/}
                 </div>
 
             </div>
@@ -34,107 +34,80 @@ export default class UserProfile extends Component {
 
     renderUserFirstName() {
         return (
-            <div>
-                <Row>
-                    <Col md="11" style={{textAlign: 'left'}}>
-                        <Input
-                            name="firstName"
-                            label="Prénom"
-                            className="firstNameInput"
-                            value={this.state.firstName}
-                            floatingLabel={true}
-                            onChange={(firstName) => this.setState({firstName})}
-                            onClick={""}
-                            required={""}
-                        />
-                    </Col>
-                </Row>
-            </div>
+            <Input
+                name="firstName"
+                label="Prénom"
+                className="firstNameInput"
+                value={this.state.firstName}
+                floatingLabel={true}
+                onChange={(firstName) => this.setState({firstName})}
+                onClick={""}
+                required={""}
+            />
         );
     }
 
     renderUserLastName() {
         return (
-            <div>
-                <Row>
-                    <Col md="11" style={{textAlign: 'left'}}>
-                        <Input
-                            name="lastName"
-                            label="Nom"
-                            className="lastNameInput"
-                            value={this.state.lastName}
-                            floatingLabel={true}
-                            onChange={(lastName) => this.setState({lastName})}
-                        />
-                    </Col>
-                </Row>
-            </div>
+            <Input
+                name="lastName"
+                label="Nom"
+                className="lastNameInput"
+                value={this.state.lastName}
+                floatingLabel={true}
+                onChange={(lastName) => this.setState({lastName})}
+            />
         );
     }
 
     renderUserMail() {
         return (
-            <div>
-                <Row>
-                    <Col md="11" style={{textAlign: 'left'}}>
-                        <Input
-                            type="email"
-                            name="mail"
-                            label="Adresse e-mail"
-                            className="mailInput"
-                            value={this.state.email}
-                            floatingLabel={true}
-                            onChange={(email) => this.setState({email})}
-                        />
-                    </Col>
-                </Row>
-            </div>
+            <Input
+                type="email"
+                name="mail"
+                label="Adresse e-mail"
+                className="mailInput"
+                value={this.state.email}
+                floatingLabel={true}
+                onChange={(email) => this.setState({email})}
+            />
         );
     }
 
-    renderBirthDay() {
+    renderBirthday() {
+        const birthdayDefined = this.state.birthday || false;
         return (
-            <div>
-                <Row>
-                    <Col md="11" style={{textAlign: 'left'}}>
-                        <Input
-                            type="date"
-                            name="birthday"
-                            label="Date de naissance"
-                            className="birthDayInput"
-                            value={this.state.birthday}
-                            floatingLabel={true}
-                            onChange={(birthday) => this.setState({birthday})}
-                        />
-                    </Col>
-                </Row>
-            </div>
+            <Input
+                type={birthdayDefined ? "date" : ''}
+                name="birthday"
+                label="Date de naissance"
+                className="birthDayInput"
+                value={this.state.birthday}
+                floatingLabel={true}
+                onChange={(birthday) => this._handleDateChange(birthday)}
+            />
         );
     }
 
-    renderFormButtons () {
+    renderFormButtons() {
         return (
             <div>
-                <Row>
-                    <Col>
-                        <Button
-                            variant="flat"
-                            color="primary"
-                            className="submitButton"
-                            onClick={""}
-                        >
-                            Modifier
-                        </Button>
-                        <Button
-                            variant="flat"
-                            color="danger"
-                            className="deleteButton"
-                            onClick={this.onPressSendDeleteUser}
-                        >
-                            Supprimer
-                        </Button>
-                    </Col>
-                </Row>
+                <Button
+                    variant="flat"
+                    color="primary"
+                    className="submitButton"
+                    onClick={""}
+                >
+                    Modifier
+                </Button>
+                <Button
+                    variant="flat"
+                    color="danger"
+                    className="deleteButton"
+                    onClick={this.onPressSendDeleteUser}
+                >
+                    Supprimer
+                </Button>
             </div>
         );
     }
@@ -180,6 +153,13 @@ export default class UserProfile extends Component {
 
         this.setState({modalVisible: true});
     };
+
+    _handleDateChange(event) {
+        this.setState({birthday: event.target.value});
+    }
+}
+UserProfile.defaultProps = {
+    birthday: '2016-01-01'
 }
 const modalStyle = {
     overlay: {
