@@ -10,6 +10,8 @@ import moment from "moment";
 import ChildCommentCard from "./ChildCommentCard";
 import {ListView}  from 'react-scrollable-list-view';
 import db from "../utils/db";
+import UserAvatar from "react-user-avatar";
+import UserProfile from "../scenes/UserProfile";
 
 export default class CommentCard extends Component {
     constructor(props) {
@@ -33,8 +35,22 @@ export default class CommentCard extends Component {
                 <ListViewItem height={100} key={comment.id} >
                     <Row >
                         <Row style={{borderBottom: '1px  solid rgb(200,200,200)'}}>
-                            <Col md="6" style={{textAlign: 'left'}}>
-                                <Row style={{color: 'darkred', fontWeight: 'bold'}}>{comment.writer.firstName}</Row>
+                            <Col md="6" style={{marginRight: -180, marginTop: 10}}>
+                                <div
+                                    onClick={() => this._goToUserProfile()}>
+                                    <UserAvatar style={{color: "white"}}
+                                                name={comment.writer.firstName + ' ' + comment.writer.lastName}
+                                                size="40"
+                                                color="#0174DF"
+                                    />
+                                </div>
+                            </Col>
+                            <Col md="6" style={{textAlign: 'left', marginTop: 20}}>
+                                <Row
+                                    style={{color: "#0174DF", fontWeight: 'bold'}}
+                                    onClick={() => this._goToUserProfile()}>
+                                    {comment.writer.firstName + ' ' + comment.writer.lastName}
+                                </Row>
                             </Col>
                             <Col md="6" className="time" style={{marginTop: 8, textAlign: 'right'}}>
                                 <FaClockO style={{fontSize: 16}}/> {dateTime}
@@ -108,7 +124,7 @@ export default class CommentCard extends Component {
         if (this.state.content === "") {
             this.setState({
                 errorMessage : "Veuillez entrer un commentaire !"
-        })
+            })
 
         }
         else {
@@ -190,6 +206,13 @@ export default class CommentCard extends Component {
                 </ListView>
             </Row>
         )
+    }
+
+    _goToUserProfile() {
+        this.props.history.push('/userProfile', {
+            ...this.props.comment.writer,
+        })
+
     }
 
     renderReply(comment) {

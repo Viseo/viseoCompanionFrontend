@@ -7,6 +7,7 @@ export default class User {
                 lastName,
                 email,
                 password,
+                birthday,
                 role ) {
 
         this._id = id;
@@ -14,8 +15,18 @@ export default class User {
         this._lastName = lastName;
         this._email = email;
         this._password = password;
+        this._birthday = birthday;
         this._role = role;
     }
+
+    get birthday() {
+        return this._birthday;
+    }
+
+    set birthday(value) {
+        this._birthday = value;
+    }
+
     get id() {
         return this._id;
     }

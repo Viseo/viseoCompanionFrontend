@@ -48,6 +48,7 @@ export default class EditEvent extends Component {
             modalVisible: false,
             display: 'none',
             imageName: '',
+            history: this.props.history,
             imageFile: null
 
         };
