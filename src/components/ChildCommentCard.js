@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {ListViewItem}  from 'react-scrollable-list-view';
+import {ListViewItem} from 'react-scrollable-list-view';
 import FaClockO from 'react-icons/lib/fa/clock-o';
-import {Button, Col, Row, Textarea}  from 'muicss/react';
-import {FaEdit} from "react-icons/lib/fa/index";
+import {Button, Col, Row} from 'muicss/react';
+import {FaEdit} from 'react-icons/lib/fa/index';
 import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
 import FaTimesCircle from 'react-icons/lib/fa/times-circle';
-import db from "../utils/db";
+import db from '../utils/db';
 export default class ChildCommentCard extends Component {
     constructor(props) {
         super(props);
@@ -15,22 +15,28 @@ export default class ChildCommentCard extends Component {
         };
     }
 
+    componentWillReceiveProps({childComment}) {
+        this.setState({
+            content: childComment.content,
+        });
+    }
+
     render() {
         const {childComment, date} = this.props;
-        const disable = childComment.writer.id == 1 ? false : true;
-        const renderActionComment = childComment.writer.id == 1 ?
+        const disable = childComment.writer.id !== 1;
+        const renderActionComment = childComment.writer.id === 1 ?
             (
                 <Row>
                     <Col md="6" style={{textAlign: 'left'}}>
                         <Button color="danger" variant="flat" style={{fontSize: 10}}
                                 onClick={() => {
-                                    this.deleteComment(childComment.id)
+                                    this.deleteComment(childComment.id);
                                 }}
                         >Supprimer le commentaire</Button>
                     </Col>
                     <Col md="6" style={{textAlign: 'right'}}>
                         <Button color="primary" style={{fontSize: 10}} onClick={() => {
-                            this.updateComment(childComment)
+                            this.updateComment(childComment);
                         }}
                         ><FaEdit /> Modifier</Button>
                     </Col>
@@ -60,7 +66,7 @@ export default class ChildCommentCard extends Component {
                     <FaTimesCircle style={{fontSize: 12, marginRight: 5, color: '#B71C1C'}}/>
                     Bloquer
                 </Button>
-              </Row>)
+            </Row>)
         ;
         return (
             <div>
@@ -70,7 +76,7 @@ export default class ChildCommentCard extends Component {
                             <Col md="6" style={{textAlign: 'left'}}>
                                 <Row style={{
                                     color: 'darkred',
-                                    fontWeight: 'bold'
+                                    fontWeight: 'bold',
                                 }}>{childComment.writer.firstName}</Row>
                             </Col>
                             <Col md="6" className="time" style={{marginTop: 8, textAlign: 'right'}}>
@@ -88,7 +94,7 @@ export default class ChildCommentCard extends Component {
                     </Row>
                 </ListViewItem>
             </div>
-        )
+        );
 
     }
 
@@ -130,9 +136,9 @@ export default class ChildCommentCard extends Component {
     setContent = (event) => {
         let inputValue = event.target.value;
         this.setState({
-            content: inputValue
-        })
-    }
+            content: inputValue,
+        });
+    };
 
     updateComment(comment) {
         const newComment = {
@@ -144,8 +150,8 @@ export default class ChildCommentCard extends Component {
             writer: comment.writer,
             childComments: comment.children,
             likers: comment.likers,
-            nbLike: comment.nbLike
-        }
+            nbLike: comment.nbLike,
+        };
         db.updateComment(newComment);
         window.location.reload();
     }
@@ -154,6 +160,5 @@ export default class ChildCommentCard extends Component {
         db.deleteComment(id);
         window.location.reload();
     }
-
 
 }

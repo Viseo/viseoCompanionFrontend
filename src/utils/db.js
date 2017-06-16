@@ -127,15 +127,8 @@ async function getComments(idEvent) {
             for (let i = 0; i < commentsJson.length; i++) {
                 let comment = commentsJson[i];
                 comments.push({
-                    id: comment.id,
-                    version: comment.version,
-                    date: comment.datetime,
-                    writer: comment.writer,
-                    eventId: comment.eventId,
+                    ...comment,
                     children: comment.childComments,
-                    nbLike: comment.nbLike,
-                    likers: comment.likers,
-                    publish: comment.publish,
                 });
             }
 
