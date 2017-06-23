@@ -28,7 +28,7 @@ async function addEvent(event, imageFile) {
                     "datetime": event.date,
                     "description": event.description,
                     "keyWords": event.keyWords,
-                    "place": event.location,
+                    "location": event.location,
                     "category": event.category,
                     "imageUrl": imageUri
                 })
@@ -66,7 +66,7 @@ async function EditEvent(event, imageFile) {
                     'datetime': event.datetime,
                     'description': event.description,
                     'keyWords': event.keyWords,
-                    'place': event.location,
+                    'location': event.location,
                     "imageUrl": imageUri
                 }),
             });

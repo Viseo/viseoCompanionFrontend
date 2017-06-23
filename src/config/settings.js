@@ -6,7 +6,7 @@
 
 ///////////SERVER CONNECTION////////////////
 
-let SERVER_API_URL = 'http://10.33.9.172:8080/';
+let SERVER_API_URL = 'http://10.33.178.119:8080/';
 
 // AWS Dev server
 

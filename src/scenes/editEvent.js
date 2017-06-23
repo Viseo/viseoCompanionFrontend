@@ -211,7 +211,7 @@ export default class EditEvent extends Component {
         let datetime = moment(event.datetime);
         this.setState({
             ...event,
-            location: event.place,
+            location: event.location,
             categoryId: event.category,
             date: datetime,
             isDateSet: true,

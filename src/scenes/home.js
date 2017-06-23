@@ -93,7 +93,7 @@ export default class Home extends Component {
                 name: event.name,
                 description: event.description,
                 date: event.datetime,
-                location: event.place,
+                location: event.location,
                 category: event.category
             })
         }
