@@ -8,6 +8,7 @@ import db from "../utils/db";
 import Home from "./home";
 import ResetPassword from "./ResetPassword";
 import UserProfile from "./UserProfile";
+import GMap from './map';
 
 class App extends Component {
     //TODO: first page should be the signIn form
@@ -25,6 +26,7 @@ class App extends Component {
                         <Route path="/edit/:id" component={EditEvent} event={event}/>
                         <Route path="/resetPassword" component={ResetPassword}/>
                         <Route path="/userProfile" component={UserProfile}/>
+                        <Route path="/place" component={GMap}/>
                     </div>
                 </Router>
             </div>

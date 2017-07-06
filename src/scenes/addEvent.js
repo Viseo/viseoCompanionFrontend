@@ -1,7 +1,3 @@
-/**
- * Created by LMA3606 on 16/02/2017.
- */
-
 import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
@@ -275,7 +271,7 @@ export default class AddEvent extends Component {
                     </Col>
                     <Col md="2">
                         <div className="locationLogo">
-                            <img src={locationLogo} alt="location" style={{width: 26}}/>
+                            <img src={locationLogo} alt="location" style={{width: 26}}  onClick={this.goToMap}/>
                         </div>
                     </Col>
                 </Row>
@@ -283,7 +279,9 @@ export default class AddEvent extends Component {
             </div>
         );
     }
-
+    goToMap = async () => {
+        this.props.history.push('/place');
+    }
     renderDateInput() {
         const prefilledDate = this.state.date ?
             moment(this.state.date) :
