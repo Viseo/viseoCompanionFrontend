@@ -38,7 +38,7 @@ export default class AddEvent extends Component {
             imageName: "",
             imageFile: null,
             coords: {},
-            location: "",
+            address: "",
         };
 
 
@@ -129,7 +129,7 @@ export default class AddEvent extends Component {
         if (!this.state.isTimeSet) {
             hasError = util.formatMessageWithSlash(hasError, " un horaire");
         }
-        if (this.state.location === "" || this.state.errorLocation !== "") {
+        if (this.state.address === "" || this.state.errorLocation !== "") {
             hasError = util.formatMessageWithSlash(hasError, " un lieu correct");
         }
 
@@ -150,7 +150,7 @@ export default class AddEvent extends Component {
                 this.state.name,
                 this.state.description,
                 this.state.datetime,
-                this.state.location,
+                this.state.address,
                 this.state.keyWords,
                 this.state.categoryId);
             if (await db.addEvent(newEvent, this.state.imageFile)) {
@@ -187,8 +187,8 @@ export default class AddEvent extends Component {
         }
     };
 
-    handleLocationChange = (location) => {
-        let inputValue = location;
+    handleLocationChange = (address) => {
+        let inputValue = address;
         this.setState({
             location: inputValue,
             isLocationRequired: true,
