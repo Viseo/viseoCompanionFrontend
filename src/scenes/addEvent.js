@@ -38,7 +38,7 @@ export default class AddEvent extends Component {
             imageName: "",
             imageFile: null,
             coords: {},
-            address: "",
+            location: "",
         };
 
 
@@ -187,8 +187,8 @@ export default class AddEvent extends Component {
         }
     };
 
-    handleLocationChange = (address) => {
-        let inputValue = address;
+    handleLocationChange = (location) => {
+        let inputValue = location;
         this.setState({
             location: inputValue,
             isLocationRequired: true,
