@@ -73,28 +73,26 @@ export default class GettingStartedExample extends Component {
                 <h1>
                     Getting Started
                 </h1>
-                <div>
-                    <AutoCompleteForm />
-                </div>
-                {/*<GettingStartedGoogleMap*/}
-                    {/*containerElement={*/}
-                        {/*<div style={{*/}
-                            {/*backgroundColor: 'white',*/}
-                            {/*position: 'fixed',*/}
-                            {/*marginLeft: 300,*/}
-                            {/*width: 832,*/}
-                            {/*height: 400,*/}
-                            {/*zIndex: 9900,*/}
-                        {/*}}/>*/}
-                    {/*}*/}
-                    {/*mapElement={*/}
-                        {/*<div style={{height: '100%',position:'absolute !important'}}/>*/}
-                    {/*}*/}
-                    {/*onMapLoad={this.handleMapLoad}*/}
-                    {/*onMapClick={this.handleMapClick}*/}
-                    {/*markers={this.state.markers}*/}
-                    {/*onMarkerRightClick={this.handleMarkerRightClick}*/}
-                {/*/>*/}
+
+                <GettingStartedGoogleMap
+                    containerElement={
+                        <div style={{
+                            backgroundColor: 'white',
+                            position: 'fixed',
+                            marginLeft: 300,
+                            width: 832,
+                            height: 400,
+                            zIndex: 9900,
+                        }}/>
+                    }
+                    mapElement={
+                        <div style={{aheight: '100%',position:'absolute !important'}}/>
+                    }
+                    onMapLoad={this.handleMapLoad}
+                    onMapClick={this.handleMapClick}
+                    markers={this.state.markers}
+                    onMarkerRightClick={this.handleMarkerRightClick}
+                />
             </div>
         );
     }

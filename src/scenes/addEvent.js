@@ -1,70 +1,96 @@
-import React, {Component} from 'react';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import locationLogo from '../images/locationLogo.png';
-import './addEvent.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import Event from '../utils/event';
-import db from '../utils/db';
-import * as util from '../utils/util';
-import HorizontalToggleBar from '../components/horizontalToggleBar';
-import categories from '../utils/eventCategories';
-import {Input, Textarea, Button, Option, Container, Row, Col} from 'muicss/react'; //https://www.muicss.com/docs/v1/react
-import FileUpload  from 'react-fileupload';
-import FaDownload from 'react-icons/lib/fa/download';
+import React, {Component} from "react";
+import DatePicker from "react-datepicker";
+import moment from "moment";
+import locationLogo from "../images/locationLogo.png";
+import "./addEvent.css";
+import "react-datepicker/dist/react-datepicker.css";
+import Event from "../utils/event";
+import db from "../utils/db";
+import * as util from "../utils/util";
+import HorizontalToggleBar from "../components/horizontalToggleBar";
+import categories from "../utils/eventCategories";
+import {Input, Textarea, Button, Option, Container, Row, Col} from "muicss/react"; //https://www.muicss.com/docs/v1/react
+import FileUpload  from "react-fileupload";
+import FaDownload from "react-icons/lib/fa/download";
+import  PlacesAutocomplete from "react-places-autocomplete";
+import geocoding from "reverse-geocoding";
 export default class AddEvent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            errorName: '',
+            name: "",
+            errorName: "",
             isNameRequired: true,
-            location: '',
-            errorLocation: '',
+            errorLocation: "",
             isLocationRequired: false,
             hours: [],
-            time: '',
-            isTimeSet: '',
-            timeStyle: 'select_notVisited',
+            time: "",
+            isTimeSet: "",
+            timeStyle: "select_notVisited",
             date: this.getDateFromCalendar(),
             isDateSet: true,
-            datepickerStyle: 'datepicker',
-            datetime: '',
-            keyWords: '',
-            description: '',
-            errorType: '',
-            categoryId: '',
-            imageName: '',
-            imageFile: null
+            datepickerStyle: "datepicker",
+            datetime: "",
+            keyWords: "",
+            description: "",
+            errorType: "",
+            categoryId: "",
+            imageName: "",
+            imageFile: null,
+            coords: {},
+            address: "",
         };
+
+
         this.generateSelectHours();
+
     }
 
+    onChange = (address) => {
+        this.setState({address});
+        this.handleLocationChange({address});
+    };
     getDateFromCalendar() {
-        let datePickedFromCalendar = this.props.location.state ? this.props.location.state.date : null
+        let datePickedFromCalendar = this.props.location.state ? this.props.location.state.date : null;
         return datePickedFromCalendar ?
             moment(datePickedFromCalendar) :
-            null
+            null;
     }
+
+    componentWillMount() {
+        this._setLatLng();
+
+    }
+
+    _setLatLng = async () => {
+        const geolocation = navigator.geolocation;
+        this.getLocation(geolocation)
+            .then(({coords}) => {
+                this.setState({
+                    coords: coords,
+                });
+                this.getUserLocation(coords);
+            });
+    };
 
     emptyFields = () => {
         this.setState({
-            name: '',
+            name: "",
             isNameRequired: false,
-            location: '',
+            location: "",
             isLocationRequired: false,
-            errorLocation: '',
-            time: '',
-            isTimeSet: '',
-            date: '',
-            isDateSet: '',
-            datetime: '',
-            keyWords: '',
-            description: '',
-            errorName: '',
-            errorType: '',
-            timeStyle: 'select_notVisited',
-        })
+            errorLocation: "",
+            time: "",
+            isTimeSet: "",
+            date: "",
+            isDateSet: "",
+            datetime: "",
+            keyWords: "",
+            description: "",
+            errorName: "",
+            errorType: "",
+            timeStyle: "select_notVisited",
+        });
     };
 
     generateSelectHours() {
@@ -84,17 +110,17 @@ export default class AddEvent extends Component {
     };
 
     displaySuccessMessage = () => {
-        this.success.style.transition = 'initial';
+        this.success.style.transition = "initial";
         this.success.style.opacity = 100;
         setTimeout(() => {
-            this.success.style.transition = 'opacity 5s ease-in';
+            this.success.style.transition = "opacity 5s ease-in";
             this.success.style.opacity = 0;
         }, 10);
     };
 
     isFormCorrect = () => {
-        let hasError = '';
-        if (this.state.name === '' || this.state.errorName !== '') {
+        let hasError = "";
+        if (this.state.name === "" || this.state.errorName !== "") {
             hasError = " un nom correct";
         }
         if (!this.state.isDateSet) {
@@ -103,16 +129,16 @@ export default class AddEvent extends Component {
         if (!this.state.isTimeSet) {
             hasError = util.formatMessageWithSlash(hasError, " un horaire");
         }
-        if (this.state.location === '' || this.state.errorLocation !== '') {
+        if (this.state.location === "" || this.state.errorLocation !== "") {
             hasError = util.formatMessageWithSlash(hasError, " un lieu correct");
         }
 
-        if (hasError !== '') {
-            this.setState({errorType: 'Veuillez entrer :' + hasError});
+        if (hasError !== "") {
+            this.setState({errorType: "Veuillez entrer :" + hasError});
             return false;
         } else {
             this.setState({
-                datetime: util.getDateTime(this.state.date, this.state.time)
+                datetime: util.getDateTime(this.state.date, this.state.time),
             });
             return true;
         }
@@ -126,13 +152,13 @@ export default class AddEvent extends Component {
                 this.state.datetime,
                 this.state.location,
                 this.state.keyWords,
-                this.state.categoryId)
+                this.state.categoryId);
             if (await db.addEvent(newEvent, this.state.imageFile)) {
                 this.emptyFields();
                 this.displaySuccessMessage();
-                this.props.history.push('/home');
+                this.props.history.push("/home");
             } else {
-                this.setState({errorType: 'Erreur lors de l\'envois au serveur.'});
+                this.setState({errorType: "Erreur lors de l'envois au serveur."});
             }
         }
     };
@@ -142,27 +168,27 @@ export default class AddEvent extends Component {
         if (inputValue.length <= 30) {
             this.setState({
                 name: inputValue,
-                isNameRequired: true
+                isNameRequired: true,
             });
         }
         let isNameValid = util.isNameValid(inputValue);
         if (isNameValid === -2) {
             this.setState({
-                errorName: 'Le nom doit contenir entre 2 et 30 caractères.'
+                errorName: "Le nom doit contenir entre 2 et 30 caractères.",
             });
         } else if (!isNameValid) {
             this.setState({
-                errorName: 'Le nom doit seulement contenir des caractères alphanumériques et ., -, \', ", /, +, *, #, ?, !'
+                errorName: "Le nom doit seulement contenir des caractères alphanumériques et ., -, ', \", /, +, *, #, ?, !",
             });
         } else {
             this.setState({
-                errorName: ''
+                errorName: "",
             });
         }
     };
 
-    handleLocationChange = (event) => {
-        let inputValue = event.target.value;
+    handleLocationChange = (address) => {
+        let inputValue = address;
         this.setState({
             location: inputValue,
             isLocationRequired: true,
@@ -170,15 +196,11 @@ export default class AddEvent extends Component {
         let isLocationValid = util.isLocationValid(inputValue);
         if (isLocationValid === -2) {
             this.setState({
-                errorLocation: 'Le lieu doit contenir au moins deux caractères.'
-            });
-        } else if (!isLocationValid) {
-            this.setState({
-                errorLocation: 'Le lieu doit seulement contenir des caractères alphanumériques, tiret ou apostrophe.'
+                errorLocation: "Le lieu doit contenir au moins deux caractères.",
             });
         } else {
             this.setState({
-                errorLocation: ''
+                errorLocation: "",
             });
         }
     };
@@ -195,30 +217,30 @@ export default class AddEvent extends Component {
     handleDateChange = (date) => {
         if (date) {
             this.setState({
-                datepickerStyle: 'datepicker',
+                datepickerStyle: "datepicker",
                 date,
                 isDateSet: true,
             });
         } else {
             this.setState({
-                datepickerStyle: 'datepicker_empty',
+                datepickerStyle: "datepicker_empty",
                 isDateSet: false,
-            })
+            });
         }
     };
 
     handleTimeChange = (event) => {
         if (parseInt(event.target.value, 10) === 0) {
             this.setState({
-                time: '',
+                time: "",
                 isTimeSet: false,
-                timeStyle: 'select_empty'
+                timeStyle: "select_empty",
             });
         } else {
             this.setState({
                 time: event.target.value,
                 isTimeSet: true,
-                timeStyle: 'select_filled',
+                timeStyle: "select_filled",
             });
         }
     };
@@ -226,7 +248,7 @@ export default class AddEvent extends Component {
     renderNameInput() {
         const limit = 30;
         let remainder = limit - this.state.name.length;
-        let remainderColor = remainder > 5 ? 'blue' : 'red';
+        let remainderColor = remainder > 5 ? "blue" : "red";
         return (
             <div>
                 <Row>
@@ -254,24 +276,28 @@ export default class AddEvent extends Component {
     };
 
     renderLocationInput() {
+
+
+        const inputProps = {
+            value: this.state.address,
+            onChange: this.onChange,
+
+        };
         return (
             <div>
                 <Row>
-                    <Col md="10">
-                        <Input
-                            name="location"
-                            label="Lieu"
-                            className="locationInput"
-                            value={this.state.location}
-                            floatingLabel={true}
-                            onChange={this.handleLocationChange}
-                            onClick={this.handleLocationChange}
-                            required={this.state.isLocationRequired}
-                        />
+                    <Col md="10" style={{marginTop: 15}}>
+                        <form>
+                            <PlacesAutocomplete
+                                inputProps={inputProps}
+                                required={this.state.isLocationRequired}/>
+                        </form>
+
+
                     </Col>
                     <Col md="2">
                         <div className="locationLogo">
-                            <img src={locationLogo} alt="location" style={{width: 26}}  onClick={this.goToMap}/>
+                            <img src={locationLogo} alt="location" style={{width: 26}}/>
                         </div>
                     </Col>
                 </Row>
@@ -279,13 +305,48 @@ export default class AddEvent extends Component {
             </div>
         );
     }
-    goToMap = async () => {
-        this.props.history.push('/place');
+
+    getLocation = async (geolocation) => {
+        return new Promise((resolve, reject) => {
+            if (!geolocation) {
+                reject(new Error("Not Supported"));
+            }
+
+            geolocation.getCurrentPosition((position) => {
+                resolve(position);
+
+            }, () => {
+                reject(new Error("Permission denied"));
+            });
+        });
+    };
+
+    getUserLocation(coords){
+        const {latitude, longitude} = coords;
+
+        if (latitude && longitude) {
+            let config = {
+                "latitude": parseFloat(latitude),
+                "longitude": parseFloat(longitude),
+            };
+
+            geocoding.location(config, (err, data) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    this.setState({
+                        address: data.results[0].formatted_address,
+                    });
+                    console.log(this.state.address);
+                }
+            });
+        }
     }
+
     renderDateInput() {
         const prefilledDate = this.state.date ?
             moment(this.state.date) :
-            '';
+            "";
         return (
             <DatePicker
                 selected={prefilledDate}
@@ -334,8 +395,7 @@ export default class AddEvent extends Component {
     onCategorySelected = (categoryName) => {
         let categoryId = categories.eventCategories.indexOf(categoryName);
         this.setState({categoryId: categoryId});
-    }
-
+    };
 
     renderKeyWordsInput() {
         return (
@@ -350,27 +410,22 @@ export default class AddEvent extends Component {
         );
     }
 
-
     renderImageUpload() {
 
         const options = {
-            baseUrl: '/add',
-            accept: 'image/*',
+            baseUrl: "/add",
+            accept: "image/*",
             numberLimit: 1,
             chooseAndUpload: false,
             chooseFile: (files) => {
-                // console.log('you choose',typeof files == 'string' ? files : files[0].name)
-
                 this.setState({
-                    imageName:files[0].name,
-                    imageFile:files[0]
-                })
-
+                    imageName: files[0].name,
+                    imageFile: files[0],
+                });
 
             },
 
-        }
-
+        };
 
         return (
             <FileUpload
@@ -386,7 +441,6 @@ export default class AddEvent extends Component {
 
         );
     }
-
 
     render() {
         let nameInput = this.renderNameInput();
@@ -419,7 +473,7 @@ export default class AddEvent extends Component {
                         <Row>
                             {descriptionInput}
                         </Row>
-                        <Row style={{justifyContent: 'center', marginLeft: 0}}>
+                        <Row style={{justifyContent: "center", marginLeft: 0}}>
                             {categoryInput}
                         </Row>
                         <Row>
@@ -453,4 +507,4 @@ export default class AddEvent extends Component {
             </div>
         );
     }
-}
+};

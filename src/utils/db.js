@@ -17,6 +17,8 @@ async function addEvent(event, imageFile) {
         });
 
         let imageUri = await responseImage.text();
+        console.warn(imageFile)
+        console.warn(imageUri)
         if (await responseImage.status === 200) {
             let response = await fetch(settings.api.addEvent + '?host=1', {
                 method: 'POST',
@@ -39,7 +41,6 @@ async function addEvent(event, imageFile) {
         console.warn('db::addEvent ' + error);
     }
 }
-
 
 async function EditEvent(event, imageFile) {
     try {

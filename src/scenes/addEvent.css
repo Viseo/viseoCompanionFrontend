@@ -327,7 +327,9 @@ input:focus ~ .highlight {
     -moz-animation: inputHighlighter 0.3s ease;
     animation: inputHighlighter 0.3s ease;
 }
-
+#PlacesAutocomplete__root>div{
+    z-index:9000
+}
 /* ANIMATIONS ================ */
 @-webkit-keyframes inputHighlighter {
     from {
