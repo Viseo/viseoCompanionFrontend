@@ -41,7 +41,6 @@ export default class AddEvent extends Component {
             address: "",
         };
 
-
         this.generateSelectHours();
 
     }
@@ -50,6 +49,7 @@ export default class AddEvent extends Component {
         this.setState({address});
         this.handleLocationChange({address});
     };
+
     getDateFromCalendar() {
         let datePickedFromCalendar = this.props.location.state ? this.props.location.state.date : null;
         return datePickedFromCalendar ?
@@ -277,7 +277,6 @@ export default class AddEvent extends Component {
 
     renderLocationInput() {
 
-
         const inputProps = {
             value: this.state.address,
             onChange: this.onChange,
@@ -321,7 +320,7 @@ export default class AddEvent extends Component {
         });
     };
 
-    getUserLocation(coords){
+    getUserLocation(coords) {
         const {latitude, longitude} = coords;
 
         if (latitude && longitude) {
@@ -347,6 +346,7 @@ export default class AddEvent extends Component {
         const prefilledDate = this.state.date ?
             moment(this.state.date) :
             "";
+        const today = moment();
         return (
             <DatePicker
                 selected={prefilledDate}
@@ -354,7 +354,7 @@ export default class AddEvent extends Component {
                 dateFormat={"DD/MM/YYYY"}
                 placeholderText="Date"
                 todayButton={"Aujourd'hui"}
-                minDate={"19/01/1993"}
+                minDate={today}
                 className={this.state.datepickerStyle}
             />
         );
